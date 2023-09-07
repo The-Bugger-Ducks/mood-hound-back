@@ -1,0 +1,30 @@
+_id: req_5b49a3b8dd924a448d72fa16f8964b9b
+type: Request
+parentId: fld_15957b733962456dab0abb97fcc9705f
+modified: 1694051148610
+created: 1694046623380
+url: "{{ _.baseURL }}/auth/signup"
+name: signup
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"name": "admin",
+    	"email": "{{ _.users.admin.email }}",
+    	"password": "{{ _.users.admin.password }}"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1688353538540
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

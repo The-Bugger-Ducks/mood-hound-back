@@ -1,0 +1,35 @@
+_id: env_b3c87443106e4cd8863c8d19dbc17d72
+type: Environment
+parentId: env_ff1df40ef2c9476bbfec520293c0bcf7
+modified: 1694046805818
+created: 1694046662418
+name: Production
+data:
+  baseURL: https://google.com
+  users:
+    admin:
+      email: admin@email.com
+      password: "123123123"
+      token: ""
+    viewer:
+      email: viwer@email.com
+      password: "123123123"
+      token: ""
+dataPropertyOrder:
+  "&":
+    - baseURL
+    - users
+  "&~|users":
+    - admin
+    - viewer
+  "&~|users~|admin":
+    - email
+    - password
+    - token
+  "&~|users~|viewer":
+    - email
+    - password
+    - token
+color: "#ff0000"
+isPrivate: false
+metaSortKey: 1694046662418
