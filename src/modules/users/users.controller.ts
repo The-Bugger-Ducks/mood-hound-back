@@ -1,10 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { UsersService } from './users.service';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId.decorator';
-import { ApiTagsAndBearerAuth } from 'src/shared/decorators/ApiTagsAndBearerAuth.decorator';
 
 @Controller('users')
-@ApiTagsAndBearerAuth('users')
+@ApiTags('users')
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 

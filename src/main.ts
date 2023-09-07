@@ -23,6 +23,7 @@ async function bootstrap() {
 			'thebugger.duck.labs@gmail.com',
 		)
 		.addBearerAuth()
+		.addSecurityRequirements('bearer')
 		.build();
 
 	const document = SwaggerModule.createDocument(app, config);
