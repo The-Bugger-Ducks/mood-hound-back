@@ -1,6 +1,6 @@
 <h1 align="center"> Serviço Backend Mood Hound</h1>
 
-Esta API, que permite gerenciamento de parcerias, foi desenvolvida visando sua utilização no projeto "MoodHound" (mais informações vide [este link](https://github.com/The-Bugger-Ducks/mood-hound-documentation)).
+Esta API, que permite <>, foi desenvolvida visando sua utilização no projeto "MoodHound" (mais informações vide [este link](https://github.com/The-Bugger-Ducks/mood-hound-documentation)).
 
 > Aplicação desenvolvida por alunos do 6º semestre do tecnólogo em Desenvolvimento de Software Multiplataforma, na FATEC Profº Jessen Vidal - São José dos Campos, SP :rocket:
 
