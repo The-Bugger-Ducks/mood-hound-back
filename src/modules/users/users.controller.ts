@@ -12,7 +12,7 @@ import {
 	Query,
 } from '@nestjs/common';
 
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 
@@ -37,6 +37,9 @@ export class UsersController {
 	}
 
 	@Get('/search')
+	@ApiQuery({ name: 'role', enum: RoleEnum, required: false })
+	@ApiQuery({ name: 'name', required: false })
+	@ApiQuery({ name: 'email', required: false })
 	search(
 		@ActiveUserId() userId: string,
 		@Query('name') name?: string,
@@ -72,4 +75,11 @@ export class UsersController {
 	delete(@Param('id', ParseUUIDPipe) userId: string) {
 		return this.usersService.remove(userId);
 	}
+}
+function ApiModelPropertyOptional(
+	target: UsersController,
+	propertyKey: 'search',
+	parameterIndex: 2,
+): void {
+	throw new Error('Function not implemented.');
 }

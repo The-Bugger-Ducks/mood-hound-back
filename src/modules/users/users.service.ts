@@ -34,6 +34,7 @@ export class UsersService {
 				id: { not: userId },
 				name: { contains: filters.name },
 				email: { contains: filters.email },
+				role: { equals: filters.role },
 			},
 			select: {
 				id: true,
