@@ -1,0 +1,35 @@
+_id: env_ff1df40ef2c9476bbfec520293c0bcf7
+type: Environment
+parentId: wrk_df66d35bceee42cc991bff5d19120774
+modified: 1694052327332
+created: 1694046623357
+name: Base Environment
+data:
+  baseURL: http://localhost:3000
+  users:
+    admin:
+      email: admin@email.com
+      password: "123123123"
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsidXNlcklkIjoiNDYwZWMzMzktYTI1Zi00ZDM2LTkxMjYtZGViMGFlYTZhODlhIiwicm9sZSI6IlZJRVdFUiJ9LCJpYXQiOjE2OTQwNTIzMTcsImV4cCI6MTY5NDY1NzExN30.T8pmBovzClZIUguzLeCDQJ-vl0k3UFbwf5E1MGYe7zA
+    viewer:
+      email: viwer@email.com
+      password: "123123123"
+      token: asdasdfasfasfasfasfqwfqwqasdasdqwd
+dataPropertyOrder:
+  "&":
+    - baseURL
+    - users
+  "&~|users":
+    - admin
+    - viewer
+  "&~|users~|admin":
+    - email
+    - password
+    - token
+  "&~|users~|viewer":
+    - email
+    - password
+    - token
+color: null
+isPrivate: false
+metaSortKey: 1688353503192

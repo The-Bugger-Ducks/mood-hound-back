@@ -11,7 +11,7 @@ import { Request } from 'express';
 
 import { env } from 'src/shared/config/env';
 
-import { RoleEnum } from '../users/entities/Users';
+import { RoleEnum } from '../users/entities/users.entity';
 
 import { HAS_ROLES_KEY } from 'src/shared/decorators/HasRoles.decorator';
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/IsPublic.decorator';

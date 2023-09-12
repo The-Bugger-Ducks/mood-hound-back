@@ -1,0 +1,29 @@
+_id: req_418f8a10e33f48189a89a0618bd9bef8
+type: Request
+parentId: fld_15957b733962456dab0abb97fcc9705f
+modified: 1694046859709
+created: 1694046623389
+url: "{{ _.baseURL }}/auth/signin"
+name: signin
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"email": "{{ _.users.admin.email }}",
+    	"password": "{{ _.users.admin.password }}"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1688353538490
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
