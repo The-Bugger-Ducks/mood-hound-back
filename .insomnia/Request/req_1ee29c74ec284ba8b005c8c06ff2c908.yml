@@ -1,0 +1,40 @@
+_id: req_1ee29c74ec284ba8b005c8c06ff2c908
+type: Request
+parentId: fld_a2113d61c00649b68bbcad00063ce759
+modified: 1694487218697
+created: 1694481132181
+url: "{{ _.baseURL }}/users/search"
+name: search
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_894b4daaeb034fe1a34f496d14ed4df2
+    name: name
+    value: vie
+    description: ""
+    disabled: true
+  - id: pair_671b41b7bdaf4ce58bf70c23b47a49fc
+    name: email
+    value: admin
+    description: ""
+    disabled: true
+  - id: pair_05ab765c5d7b4073921836c5577ccd8b
+    name: role
+    value: ADMIN
+    description: ""
+    disabled: true
+headers:
+  - name: User-Agent
+    value: insomnia/2023.5.8
+authentication:
+  type: bearer
+  token: "{{ _.users.viewer.token }}"
+metaSortKey: -1694481132243.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
