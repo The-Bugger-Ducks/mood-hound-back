@@ -1,20 +1,21 @@
-_id: req_53036d279e06454cb7b358f9fc520a24
+_id: req_3d4d89e46b84436a8c8e9a175c6810eb
 type: Request
 parentId: fld_a2113d61c00649b68bbcad00063ce759
-modified: 1694487220011
-created: 1694046623402
-url: "{{ _.baseURL }}/users/me"
-name: me
+modified: 1694487284645
+created: 1694487226953
+url: "{{ _.baseURL }}/users/a024dcea-005e-4239-af06-ea6d61d17a89"
+name: remove
 description: ""
-method: GET
+method: DELETE
 body: {}
 parameters: []
-headers: []
+headers:
+  - name: User-Agent
+    value: insomnia/2023.5.8
 authentication:
   type: bearer
-  token: "{{ _.users.viewer.token }}"
-  disabled: false
-metaSortKey: -1694481132249.75
+  token: "{{ _.users.admin.token }}"
+metaSortKey: -1694481132106
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true
