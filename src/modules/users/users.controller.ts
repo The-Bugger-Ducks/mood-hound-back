@@ -25,6 +25,7 @@ import { RoleEnum } from './entities/users.entity';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UpdateUserRoleDto } from './dto/update.userRole.dto';
+import { IsPublic } from 'src/shared/decorators/IsPublic.decorator';
 
 @Controller('users')
 @ApiTags('users')
@@ -75,11 +76,4 @@ export class UsersController {
 	delete(@Param('id', ParseUUIDPipe) userId: string) {
 		return this.usersService.remove(userId);
 	}
-}
-function ApiModelPropertyOptional(
-	target: UsersController,
-	propertyKey: 'search',
-	parameterIndex: 2,
-): void {
-	throw new Error('Function not implemented.');
 }

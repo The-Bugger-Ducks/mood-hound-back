@@ -30,7 +30,7 @@ $ yarn install
 $ docker-compose up -d
 
 # Utilize o comando do Prisma para sincronizar a estrutura do banco de dados
-$ npx prisma migrate deploy
+$ npx prisma generate
 
 # Inicie o Projeto
 $ yarn start:dev
