@@ -24,3 +24,23 @@ model User {
 
   @@map("users")
 }
+
+enum CommentSentiment {
+  POSITIVE
+  NEGATIVE
+  NEUTRAL
+  INDETERMINATE
+}
+
+model Comment {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String           @map("product_id")
+  productName String           @map("product_name")
+  text        String
+  topic       String
+  sentiment   CommentSentiment
+  rating      Int
+  createdAt   DateTime         @default(now())
+
+  @@map("comments")
+}
