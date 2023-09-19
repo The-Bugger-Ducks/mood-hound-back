@@ -1,27 +1,27 @@
-_id: req_5b49a3b8dd924a448d72fa16f8964b9b
+_id: req_cb482a2b2eb44fb28293c75ea7d94ee5
 type: Request
 parentId: fld_a2113d61c00649b68bbcad00063ce759
-modified: 1694487406824
-created: 1694046623380
-url: "{{ _.baseURL }}/auth/signup"
-name: create
+modified: 1694487172333
+created: 1694486172766
+url: "{{ _.baseURL }}/users/role"
+name: role
 description: ""
-method: POST
+method: PUT
 body:
   mimeType: application/json
   text: |-
     {
-    	"name": "VIEWER",
-    	"email": "{{ _.users.viewer.email }}",
-    	"password": "{{ _.users.viewer.password }}",
+    	"userId": "a024dcea-005e-4239-af06-ea6d61d17a89",
     	"role": "VIEWER"
     }
 parameters: []
 headers:
   - name: Content-Type
     value: application/json
-authentication: {}
-metaSortKey: -1694481132281
+authentication:
+  type: bearer
+  token: "{{ _.users.admin.token }}"
+metaSortKey: -1694481132206
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true
