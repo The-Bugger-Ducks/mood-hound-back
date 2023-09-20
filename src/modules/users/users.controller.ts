@@ -6,7 +6,6 @@ import {
 	HttpCode,
 	HttpStatus,
 	Param,
-	ParseUUIDPipe,
 	Post,
 	Put,
 	Query,
@@ -25,7 +24,6 @@ import { RoleEnum } from './entities/users.entity';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UpdateUserRoleDto } from './dto/update.userRole.dto';
-import { IsPublic } from 'src/shared/decorators/IsPublic.decorator';
 
 @Controller('users')
 @ApiTags('users')
@@ -73,7 +71,7 @@ export class UsersController {
 
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	delete(@Param('id', ParseUUIDPipe) userId: string) {
+	delete(@Param('id') userId: string) {
 		return this.usersService.remove(userId);
 	}
 }
