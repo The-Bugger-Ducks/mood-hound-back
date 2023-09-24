@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 import {
 	IsBoolean,
@@ -19,9 +19,9 @@ enum Order {
 export class PageOptionsDto {
 	@Type(() => Number)
 	@IsInt()
-	@Max(50)
+	@Max(500)
 	@Min(1)
-	take?: number = 10;
+	take?: number = 100;
 
 	@IsEnum(Order)
 	@IsOptional()
@@ -32,12 +32,12 @@ export class PageOptionsDto {
 	cursor?: string;
 
 	@ValidateIf((property) => property.cursor)
-	@Type(() => Boolean)
+	@Transform((property) => property.value === 'true')
 	@IsBoolean()
 	next?: boolean;
 
 	@ValidateIf((property) => property.cursor)
-	@Type(() => Boolean)
+	@Transform((property) => property.value === 'true')
 	@IsBoolean()
 	previous?: boolean;
 

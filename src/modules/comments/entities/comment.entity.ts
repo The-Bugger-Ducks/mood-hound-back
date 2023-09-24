@@ -4,3 +4,12 @@ export enum CommentSentimentEnum {
 	NEUTRAL = 'NEUTRAL',
 	INDETERMINATE = 'INDETERMINATE',
 }
+
+export enum CommentTopicEnum {
+	QUALITY = 'Qualidade',
+	RECEIVEMENT = 'Recebimento',
+	SATISFIED = 'Satisfação geral',
+	DELIVERY = 'Entrega',
+	RECOMMENDATION = 'Recomendação',
+	EXPECTATION = 'Expectativa',
+}

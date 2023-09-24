@@ -4,8 +4,10 @@ import { CommentsService } from './comments.service';
 
 import { IsPublic } from 'src/shared/decorators/IsPublic.decorator';
 
-import { CreateCommentDto } from './dto/create-comment.dto';
 import { PageOptionsDto } from 'src/shared/utils/paginator/pageOptions.dto';
+
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { FilterCommentDto } from './dto/filter.comment.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -19,7 +21,10 @@ export class CommentsController {
 
 	@Get()
 	@IsPublic()
-	findAll(@Query() pageOptionsDto: PageOptionsDto) {
-		return this.commentsService.findAll(pageOptionsDto);
+	findAll(
+		@Query() pageOptionsDto: PageOptionsDto,
+		@Query() filters: FilterCommentDto,
+	) {
+		return this.commentsService.findAll(pageOptionsDto, filters);
 	}
 }
