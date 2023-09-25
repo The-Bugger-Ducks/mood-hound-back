@@ -17,14 +17,12 @@ export class CommentsService {
 	constructor(private readonly commentsRepo: CommentsRepository) {}
 
 	create(createCommentDto: CreateCommentDto) {
-		const { productId, productName, rating, sentiment, text, topic } =
-			createCommentDto;
+		const { productId, productName, sentiment, text, topic } = createCommentDto;
 
 		return this.commentsRepo.create({
 			data: {
 				productId,
 				productName,
-				rating,
 				text,
 				topic,
 				sentiment,

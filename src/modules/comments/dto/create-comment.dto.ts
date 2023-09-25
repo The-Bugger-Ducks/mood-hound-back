@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { CommentSentimentEnum } from '../entities/comment.entity';
 
 export class CreateCommentDto {
@@ -22,8 +22,4 @@ export class CreateCommentDto {
 	@IsEnum(CommentSentimentEnum)
 	@IsNotEmpty()
 	sentiment: CommentSentimentEnum;
-
-	@IsNumber()
-	@IsNotEmpty()
-	rating: number;
 }

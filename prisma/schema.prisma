@@ -39,7 +39,6 @@ model Comment {
   text        String
   topic       String
   sentiment   CommentSentiment
-  rating      Int
   createdAt   DateTime?        @default(now()) @map("created_at")
   addedAt     DateTime?        @default(now()) @map("added_at")
 
