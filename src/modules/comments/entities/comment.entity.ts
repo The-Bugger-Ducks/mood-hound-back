@@ -12,4 +12,6 @@ export enum CommentTopicEnum {
 	DELIVERY = 'Entrega',
 	RECOMMENDATION = 'Recomendação',
 	EXPECTATION = 'Expectativa',
+	COSTBENEFIT = 'Custo-benefício',
+	OTHERS = 'Outros',
 }
