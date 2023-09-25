@@ -1,10 +1,10 @@
-import { IsEnum, IsNotEmpty, IsUUID, IsUppercase } from 'class-validator';
+import { IsEnum, IsMongoId, IsNotEmpty, IsUppercase } from 'class-validator';
 
 import { RoleEnum } from '../entities/users.entity';
 
 export class UpdateUserRoleDto {
 	@IsNotEmpty()
-	@IsUUID()
+	@IsMongoId()
 	userId: string;
 
 	@IsNotEmpty()
