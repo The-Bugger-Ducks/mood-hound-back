@@ -2,23 +2,22 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { hash } from 'bcryptjs';
 
-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
+import { DatabaseService } from 'src/shared/database/services/database.service';
 
-import { RoleEnum } from './entities/users.entity';
+import { UserRoleEnum } from 'src/domain/entities/user.entity';
 
-import { CreateUserDto } from './dto/create.user.dto';
-import { UpdateUserDto } from './dto/update.user.dto';
-import { UpdateUserRoleDto } from './dto/update.userRole.dto';
+import {
+	CreateUserDto,
+	UpdateUserDto,
+	UpdateUserRoleDto,
+} from 'src/domain/dtos';
 
 @Injectable()
 export class UsersService {
-	constructor(private readonly usersRepo: UsersRepository) {}
+	constructor(private readonly databaseService: DatabaseService) {}
 
 	getUserById(userId: string) {
-		return this.usersRepo.findUnique({
-			where: { id: userId },
-			select: { name: true, email: true, role: true },
-		});
+		return this.databaseService.users.findOne(userId);
 	}
 
 	search(
@@ -26,32 +25,21 @@ export class UsersService {
 		filters: {
 			name?: string;
 			email?: string;
-			role?: RoleEnum;
+			role?: UserRoleEnum;
 		},
 	) {
-		return this.usersRepo.findMany({
-			where: {
-				id: { not: userId },
-				name: { contains: filters.name },
-				email: { contains: filters.email },
-				role: { equals: filters.role },
-			},
-			select: {
-				id: true,
-				email: true,
-				name: true,
-				role: true,
-			},
+		return this.databaseService.users.findMany({
+			id: userId,
+			name: filters.name,
+			email: filters.email,
+			role: filters.role,
 		});
 	}
 
 	async create(createUserDto: CreateUserDto) {
 		const { name, role, email, password } = createUserDto;
 
-		const emailTaken = await this.usersRepo.findUnique({
-			where: { email },
-			select: { id: true },
-		});
+		const emailTaken = await this.databaseService.users.findByEmail(email);
 
 		if (emailTaken) {
 			throw new ConflictException('This email is already in use.');
@@ -59,19 +47,11 @@ export class UsersService {
 
 		const hashedPassword = await hash(password, 12);
 
-		return this.usersRepo.create({
-			data: {
-				name: name,
-				email: email,
-				password: hashedPassword,
-				role: role,
-			},
-			select: {
-				id: true,
-				name: true,
-				email: true,
-				role: true,
-			},
+		return this.databaseService.users.create({
+			name,
+			email,
+			password: hashedPassword,
+			role,
 		});
 	}
 
@@ -82,10 +62,7 @@ export class UsersService {
 			updateUserDto.password = password;
 		}
 
-		await this.usersRepo.update({
-			where: { id: userId },
-			data: updateUserDto,
-		});
+		await this.databaseService.users.update(userId, updateUserDto);
 
 		return null;
 	}
@@ -93,22 +70,13 @@ export class UsersService {
 	async updateRole(updateRoleUserDto: UpdateUserRoleDto) {
 		const { userId, role } = updateRoleUserDto;
 
-		await this.usersRepo.update({
-			where: { id: userId },
-			data: {
-				role: role,
-			},
-		});
+		await this.databaseService.users.updateRole(userId, role);
 
 		return null;
 	}
 
 	async remove(userId: string) {
-		await this.usersRepo.delete({
-			where: {
-				id: userId,
-			},
-		});
+		await this.databaseService.users.delete(userId);
 
 		return null;
 	}
