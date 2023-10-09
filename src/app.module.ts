@@ -5,9 +5,10 @@ import { DatabaseModule } from './shared/database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/auth.guard';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
-	imports: [DatabaseModule, UsersModule, AuthModule],
+	imports: [DatabaseModule, UsersModule, AuthModule, CommentsModule],
 	providers: [
 		{
 			provide: APP_GUARD,
