@@ -10,3 +10,8 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = false
+
+# 2 space indentation
+[*.yml]
+indent_style = space
+indent_size = 2

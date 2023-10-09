@@ -6,7 +6,6 @@ import {
 	HttpCode,
 	HttpStatus,
 	Param,
-	ParseUUIDPipe,
 	Post,
 	Put,
 	Query,
@@ -72,14 +71,7 @@ export class UsersController {
 
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	delete(@Param('id', ParseUUIDPipe) userId: string) {
+	delete(@Param('id') userId: string) {
 		return this.usersService.remove(userId);
 	}
-}
-function ApiModelPropertyOptional(
-	target: UsersController,
-	propertyKey: 'search',
-	parameterIndex: 2,
-): void {
-	throw new Error('Function not implemented.');
 }

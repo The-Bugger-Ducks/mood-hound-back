@@ -1,4 +1,4 @@
-<h1 align="center"> Serviço Backend Mood Hound</h1>
+![mood hound header backend](https://github.com/The-Bugger-Ducks/mood-hound-back/assets/79321198/b522b116-22a1-430b-8977-7f944833ec89)
 
 Esta API, que permite <>, foi desenvolvida visando sua utilização no projeto "MoodHound" (mais informações vide [este link](https://github.com/The-Bugger-Ducks/mood-hound-documentation)).
 
@@ -30,7 +30,7 @@ $ yarn install
 $ docker-compose up -d
 
 # Utilize o comando do Prisma para sincronizar a estrutura do banco de dados
-$ npx prisma migrate deploy
+$ npx prisma generate
 
 # Inicie o Projeto
 $ yarn start:dev
