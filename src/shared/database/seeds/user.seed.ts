@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+dotenv.config();
 
 import { hash } from 'bcryptjs';
 
@@ -6,7 +7,7 @@ import { MongoClient } from 'mongodb';
 
 import { users } from '../mocks/user.mock';
 
-import { UserRoleEnum } from 'src/domain/entities';
+import { UserRoleEnum } from '../../../domain/entities';
 
 const client = new MongoClient(process.env.DATABASE_URL);
 
@@ -20,13 +21,9 @@ async function clientDb() {
 }
 
 async function main() {
-	dotenv.config();
-
 	const userCollection = await clientDb();
 
-	for (let userIndex = 0; userIndex < users.length; userIndex++) {
-		const user = users[userIndex];
-
+	for (const user of users) {
 		const hashedPassword = await hash(user.password, 12);
 		user.password = hashedPassword;
 
