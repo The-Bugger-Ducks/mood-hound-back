@@ -1,4 +1,4 @@
-import { Db, Collection, ObjectId, OptionalId } from 'mongodb';
+import { Db, Collection, ObjectId, OptionalId, Filter } from 'mongodb';
 
 import { UserRepository } from 'src/domain/repositories';
 
@@ -41,7 +41,30 @@ export class UserRepositoryImpl implements UserRepository {
 
 	async findMany(user: Partial<UserEntity>): Promise<UserEntity[]> {
 		try {
-			const users = await this.userCollection.find({}).toArray();
+			const filter: Filter<UserEntity> = {
+				_id: { $ne: MongoUtils.stringToObjectID(user.id) },
+			};
+
+			if (user.name) {
+				filter.name = { $regex: user.name, $options: 'i' };
+			}
+			if (user.email) {
+				filter.email = { $regex: user.email, $options: 'i' };
+			}
+			if (user.role) {
+				filter.role = { $regex: user.role, $options: 'i' };
+			}
+
+			const users = await this.userCollection
+				.find(filter, {
+					projection: {
+						_id: true,
+						name: true,
+						email: true,
+						role: true,
+					},
+				})
+				.toArray();
 
 			return MongoUtils.convertEntityMongoList(users);
 		} catch (error) {
@@ -51,9 +74,19 @@ export class UserRepositoryImpl implements UserRepository {
 
 	async findOne(id: string): Promise<UserEntity> {
 		try {
-			const user = await this.userCollection.findOne({
-				_id: MongoUtils.stringToObjectID(id),
-			});
+			const user = await this.userCollection.findOne(
+				{
+					_id: MongoUtils.stringToObjectID(id),
+				},
+				{
+					projection: {
+						_id: true,
+						name: true,
+						email: true,
+						role: true,
+					},
+				},
+			);
 
 			return MongoUtils.convertEntityMongo(user);
 		} catch (error) {
