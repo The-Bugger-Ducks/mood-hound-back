@@ -11,18 +11,14 @@ export const DATABASE_PROVIDER_NAME = 'DATABASE_CONNECTION';
 		{
 			provide: DATABASE_PROVIDER_NAME,
 			useFactory: async (): Promise<MongoClient> => {
-				try {
-					const client = new MongoClient(env.dbURL);
+				const client = new MongoClient(env.dbURL);
 
-					await client
-						.connect()
-						.then(() => console.log('DATABASE CONNECTION SUCCESS'))
-						.catch((e) => console.error('DATABASE CONNECTION ERROR', e.stack));
+				await client
+					.connect()
+					.then(() => console.log('DATABASE CONNECTION SUCCESS'))
+					.catch((e) => console.error('DATABASE CONNECTION ERROR', e.stack));
 
-					return client;
-				} catch (error) {
-					throw error;
-				}
+				return client;
 			},
 		},
 	],
