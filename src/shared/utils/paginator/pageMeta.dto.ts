@@ -1,10 +1,10 @@
 import { PageOptionsDto } from './pageOptions.dto';
 
 export class PageMetaDto {
-	take: number;
+	take?: number;
 	hasPreviousPage: boolean;
 	hasNextPage: boolean;
-	cursor: string;
+	cursor: string | null;
 
 	constructor({
 		pageOptionsDto,

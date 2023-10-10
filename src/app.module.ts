@@ -17,4 +17,4 @@ import { CommentsModule } from './modules/comments/comments.module';
 		},
 	],
 })
-export class AppModule {}
+export class AppModule { }

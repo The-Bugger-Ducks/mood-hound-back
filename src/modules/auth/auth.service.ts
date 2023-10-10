@@ -4,14 +4,14 @@ import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
 import { SigninDto } from './dto/signin.dto';
-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
+import { UsersRepository } from '../../shared/database/repositories/users.repositories';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly usersRepo: UsersRepository,
 		private readonly jwtService: JwtService,
-	) {}
+	) { }
 
 	async signin(signinDto: SigninDto) {
 		const { email, password } = signinDto;

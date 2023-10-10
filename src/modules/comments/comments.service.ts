@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { CommentsRepository } from 'src/shared/database/repositories/comments.repositories';
-
-import {
-	PageDto,
-	PageOptionsDto,
-	PageMetaDto,
-} from 'src/shared/utils/paginator';
+import { CommentsRepository } from '../../shared/database/repositories/comments.repositories';
 
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { FilterCommentDto } from './dto/filter.comment.dto';
+import { PageDto, PageMetaDto, PageOptionsDto } from '../../shared/utils/paginator';
 
 @Injectable()
 export class CommentsService {
-	constructor(private readonly commentsRepo: CommentsRepository) {}
+	constructor(private readonly commentsRepo: CommentsRepository) { }
 
 	create(createCommentDto: CreateCommentDto) {
 		const { productId, productName, sentiment, text, topic } = createCommentDto;
@@ -44,7 +39,7 @@ export class CommentsService {
 		const pageMetaDto = new PageMetaDto({
 			itemCount: comments.length,
 			pageOptionsDto: pagination,
-			cursor: !!comments.length ? comments.at(-1).id : null,
+			cursor: !!comments.length ? comments.at(-1)!.id : null,
 		});
 
 		return new PageDto(comments, pageMetaDto);
@@ -53,7 +48,7 @@ export class CommentsService {
 	private filtersQuery(
 		filters: FilterCommentDto,
 	): Prisma.CommentWhereInput | null {
-		let where: Prisma.CommentWhereInput = null;
+		let where: Prisma.CommentWhereInput = {};
 
 		if (filters.comment && filters.topic) {
 			where = {
@@ -92,8 +87,8 @@ export class CommentsService {
 
 	private paginationQuery(pagination: PageOptionsDto) {
 		const queryPagination: Prisma.CommentFindManyArgs = {
-			take: pagination.previous ? -pagination.take : pagination.take,
-			orderBy: { addedAt: pagination.order.toString() as Prisma.SortOrder },
+			take: pagination.previous ? -pagination.take! : pagination.take,
+			orderBy: { addedAt: pagination.order?.toString() as Prisma.SortOrder },
 		};
 
 		if (pagination.cursor) {

@@ -15,9 +15,9 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 
-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId.decorator';
+import { ActiveUserId } from '../../shared/decorators/ActiveUserId.decorator';
 
-import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
+import { OptionalParseEnumPipe } from '../../shared/pipes/OptionalParseEnumPipe';
 
 import { RoleEnum } from './entities/users.entity';
 
@@ -28,7 +28,7 @@ import { UpdateUserRoleDto } from './dto/update.userRole.dto';
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) { }
 
 	@Get('/me')
 	me(@ActiveUserId() userId: string) {

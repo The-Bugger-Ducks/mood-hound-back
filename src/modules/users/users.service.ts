@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { hash } from 'bcryptjs';
 
-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
+import { UsersRepository } from '../../shared/database/repositories/users.repositories';
 
 import { RoleEnum } from './entities/users.entity';
 
@@ -12,7 +12,7 @@ import { UpdateUserRoleDto } from './dto/update.userRole.dto';
 
 @Injectable()
 export class UsersService {
-	constructor(private readonly usersRepo: UsersRepository) {}
+	constructor(private readonly usersRepo: UsersRepository) { }
 
 	getUserById(userId: string) {
 		return this.usersRepo.findUnique({
