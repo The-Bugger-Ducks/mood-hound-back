@@ -1,19 +1,28 @@
 export enum CommentSentimentEnum {
-	POSITIVE = 'POSITIVE',
-	NEGATIVE = 'NEGATIVE',
-	NEUTRAL = 'NEUTRAL',
-	INDETERMINATE = 'INDETERMINATE',
+	POSITIVE = 'POSITIVO',
+	NEGATIVE = 'NEGATIVO',
+	NEUTRAL = 'NEUTRO',
 }
 
 export enum CommentTopicEnum {
-	QUALITY = 'Qualidade',
-	RECEIVEMENT = 'Recebimento',
-	SATISFIED = 'Satisfação geral',
-	DELIVERY = 'Entrega',
-	RECOMMENDATION = 'Recomendação',
-	EXPECTATION = 'Expectativa',
-	COSTBENEFIT = 'Custo-benefício',
-	OTHERS = 'Outros',
+	QUALITY = 'QUALITY',
+	RECEIVEMENT = 'RECEIVEMENT',
+	SATISFIED = 'SATISFIED',
+	DELIVERY = 'DELIVERY',
+	RECOMMENDATION = 'RECOMMENDATION',
+	EXPECTATION = 'EXPECTATION',
+	COSTBENEFIT = 'COSTBENEFIT',
+	OTHERS = 'OTHERS',
 }
 
-export class CommentEntity {}
+export class CommentEntity {
+	id: string;
+	productId: string;
+	productName: string;
+	text: string;
+	topic: string;
+	sentiment: CommentSentimentEnum;
+	rating: number;
+	createdAt: Date;
+	addedAt: Date;
+}

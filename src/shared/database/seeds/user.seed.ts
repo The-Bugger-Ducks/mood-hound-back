@@ -8,23 +8,21 @@ import { users } from '../mocks/user.mock';
 
 import { UserRoleEnum } from 'src/domain/entities';
 
-async function clientDb() {
-	const client = new MongoClient(process.env.DATABASE_URL);
+const client = new MongoClient(process.env.DATABASE_URL);
 
+async function clientDb() {
 	await client
 		.connect()
 		.then(() => console.log('DATABASE CONNECTION SUCCESS'))
 		.catch((e) => console.error('DATABASE CONNECTION ERROR', e.stack));
 
-	return client;
+	return client.db(process.env.DB_NAME).collection('users');
 }
 
 async function main() {
 	dotenv.config();
 
-	const client = await clientDb();
-
-	const userCollection = client.db(process.env.DB_NAME).collection('users');
+	const userCollection = await clientDb();
 
 	for (let userIndex = 0; userIndex < users.length; userIndex++) {
 		const user = users[userIndex];
@@ -39,8 +37,8 @@ async function main() {
 			role: user.role === 'ADMIN' ? UserRoleEnum.ADMIN : UserRoleEnum.VIEWER,
 		});
 	}
-
-	await client.close();
 }
 
-main().catch((e) => console.error(e));
+main()
+	.catch((e) => console.error(e))
+	.finally(() => client.close());
