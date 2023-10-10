@@ -18,6 +18,6 @@ export class PageMetaDto {
 		this.page = pageOptionsDto.page;
 		this.totalPages = Math.ceil(total / pageOptionsDto.limit);
 		this.hasPreviousPage = pageOptionsDto.page != 1;
-		this.hasNextPage = !(pageOptionsDto.page == this.totalPages);
+		this.hasNextPage = pageOptionsDto.page < this.totalPages;
 	}
 }
