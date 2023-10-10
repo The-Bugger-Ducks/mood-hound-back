@@ -88,11 +88,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 		}
 
 		if (filters.dateStart && filters.dateDone) {
-			filter.addedAt = { $lte: filters.dateStart, $gte: filters.dateDone };
+			filter.addedAt = { $gte: filters.dateStart, $lte: filters.dateDone };
 		} else if (filters.dateStart) {
-			filter.addedAt = { $lte: filters.dateStart };
+			filter.addedAt = { $gte: filters.dateStart };
 		} else if (filters.dateDone) {
-			filter.addedAt = { $gte: filters.dateDone };
+			filter.addedAt = { $lte: filters.dateDone };
 		}
 
 		return filter;
