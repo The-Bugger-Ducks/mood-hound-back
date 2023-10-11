@@ -6,9 +6,16 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { CommentsModule } from './modules/comments/comments.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
-	imports: [DatabaseModule, UsersModule, AuthModule, CommentsModule],
+	imports: [
+		DatabaseModule,
+		UsersModule,
+		AuthModule,
+		CommentsModule,
+		DashboardModule,
+	],
 	providers: [
 		{
 			provide: APP_GUARD,

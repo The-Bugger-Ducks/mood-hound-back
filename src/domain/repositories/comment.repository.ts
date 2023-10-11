@@ -1,3 +1,5 @@
+import { Document } from 'mongodb';
+
 import { IGenericRepository } from '../abstractions/generic-repository.abstract';
 import { CommentEntity } from '../entities/comment.entity';
 
@@ -12,4 +14,6 @@ export interface CommentRepository extends IGenericRepository<CommentEntity> {
 		comments: CommentEntity[];
 		total: number;
 	}>;
+
+	rankingOfTopics(): Promise<Document[]>;
 }
