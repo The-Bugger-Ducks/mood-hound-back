@@ -5,7 +5,13 @@ import { DatabaseService } from 'src/shared/database/services/database.service';
 export class DashboardService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
-	findAll() {
-		return this.databaseService.comments.rankingOfTopics();
+	async findAll() {
+		const rankingOfTopics =
+			await this.databaseService.comments.rankingOfTopics();
+
+		const timeSeriesDataTopic =
+			await this.databaseService.comments.timeSeriesDataTopic();
+
+		return { rankingOfTopics, timeSeriesDataTopic };
 	}
 }
