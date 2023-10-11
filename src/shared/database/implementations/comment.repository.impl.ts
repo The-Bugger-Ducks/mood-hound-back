@@ -5,6 +5,7 @@ import {
 	OptionalId,
 	FindOptions,
 	Filter,
+	Document,
 } from 'mongodb';
 
 import { CommentEntity } from 'src/domain/entities';
@@ -59,6 +60,22 @@ export class CommentRepositoryImpl implements CommentRepository {
 
 	async findOne(id: string): Promise<CommentEntity> {
 		return;
+	}
+
+	async rankingOfTopics(): Promise<Document[]> {
+		const pipeline = [
+			{
+				$group: {
+					_id: '$topic',
+					value: { $sum: 1 },
+				},
+			},
+			{ $project: { _id: 0, label: '$_id', value: 1 } },
+			{ $sort: { value: -1 } },
+			{ $limit: 5 },
+		];
+
+		return await this.commentCollection.aggregate(pipeline).toArray();
 	}
 
 	async create(createCommentDto: CreateCommentDto): Promise<void> {
