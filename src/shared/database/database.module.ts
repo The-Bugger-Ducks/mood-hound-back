@@ -1,11 +1,27 @@
 import { Global, Module } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import { UsersRepository } from './repositories/users.repositories';
-import { CommentsRepository } from './repositories/comments.repositories';
+import { MongoClient } from 'mongodb';
+
+import { env } from '../config/env';
+
+export const DATABASE_PROVIDER_NAME = 'DATABASE_CONNECTION';
 
 @Global()
 @Module({
-	providers: [PrismaService, UsersRepository, CommentsRepository],
-	exports: [UsersRepository, CommentsRepository],
+	providers: [
+		{
+			provide: DATABASE_PROVIDER_NAME,
+			useFactory: async (): Promise<MongoClient> => {
+				const client = new MongoClient(env.dbURL);
+
+				await client
+					.connect()
+					.then(() => console.log('DATABASE CONNECTION SUCCESS'))
+					.catch((e) => console.error('DATABASE CONNECTION ERROR', e.stack));
+
+				return client;
+			},
+		},
+	],
+	exports: [DATABASE_PROVIDER_NAME],
 })
 export class DatabaseModule {}

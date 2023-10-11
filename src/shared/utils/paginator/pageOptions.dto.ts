@@ -21,27 +21,14 @@ export class PageOptionsDto {
 	@IsInt()
 	@Max(500)
 	@Min(1)
-	take?: number = 100;
+	limit?: number = 100;
 
 	@IsEnum(Order)
 	@IsOptional()
 	order?: Order = Order.ASC;
 
-	@IsString()
-	@IsOptional()
-	cursor?: string;
-
-	@ValidateIf((property) => property.cursor)
-	@Transform((property) => property.value === 'true')
-	@IsBoolean()
-	next?: boolean;
-
-	@ValidateIf((property) => property.cursor)
-	@Transform((property) => property.value === 'true')
-	@IsBoolean()
-	previous?: boolean;
-
-	get skip(): number {
-		return this.cursor ? 1 : 0;
-	}
+	@Type(() => Number)
+	@Min(1)
+	@IsInt()
+	page: number;
 }

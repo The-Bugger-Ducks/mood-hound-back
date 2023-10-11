@@ -1,8 +1,9 @@
 import { IsDateString, IsEnum, IsString } from 'class-validator';
-import { CommentTopicEnum } from '../entities/comment.entity';
 import { PartialType } from '@nestjs/swagger';
 
-export class FilterComment {
+import { CommentTopicEnum } from 'src/domain/entities/comment.entity';
+
+class FilterComment {
 	@IsString()
 	comment: string;
 

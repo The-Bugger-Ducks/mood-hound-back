@@ -19,11 +19,14 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId.decorator';
 
 import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
 
-import { RoleEnum } from './entities/users.entity';
+import { UserRoleEnum } from 'src/domain/entities/user.entity';
 
-import { CreateUserDto } from './dto/create.user.dto';
-import { UpdateUserDto } from './dto/update.user.dto';
-import { UpdateUserRoleDto } from './dto/update.userRole.dto';
+import {
+	CreateUserDto,
+	UpdateUserDto,
+	UpdateUserRoleDto,
+} from '../../domain/dtos';
+import { ParseObjectIDPipe } from 'src/shared/pipes/ParseObjectIDPipe';
 
 @Controller('users')
 @ApiTags('users')
@@ -36,14 +39,14 @@ export class UsersController {
 	}
 
 	@Get('/search')
-	@ApiQuery({ name: 'role', enum: RoleEnum, required: false })
+	@ApiQuery({ name: 'role', enum: UserRoleEnum, required: false })
 	@ApiQuery({ name: 'name', required: false })
 	@ApiQuery({ name: 'email', required: false })
 	search(
 		@ActiveUserId() userId: string,
 		@Query('name') name?: string,
 		@Query('email') email?: string,
-		@Query('role', new OptionalParseEnumPipe(RoleEnum)) role?: RoleEnum,
+		@Query('role', new OptionalParseEnumPipe(UserRoleEnum)) role?: UserRoleEnum,
 	) {
 		return this.usersService.search(userId, {
 			name,
@@ -71,7 +74,7 @@ export class UsersController {
 
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	delete(@Param('id') userId: string) {
+	delete(@Param('id', ParseObjectIDPipe) userId: string) {
 		return this.usersService.remove(userId);
 	}
 }
