@@ -78,6 +78,41 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return await this.commentCollection.aggregate(pipeline).toArray();
 	}
 
+	async timeSeriesDataTopic(): Promise<Document[]> {
+		const agg = [
+			{
+				$group: {
+					_id: {
+						month: {
+							$dateTrunc: {
+								date: '$created_at',
+								unit: 'month',
+							},
+						},
+						sentiment: '$sentiment',
+					},
+					total: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$sort: {
+					'_id.month': 1,
+				},
+			},
+			{
+				$replaceWith: {
+					month: '$_id.month',
+					sentiment: '$_id.sentiment',
+					total: '$total',
+				},
+			},
+		];
+
+		return await this.commentCollection.aggregate(agg).toArray();
+	}
+
 	async create(createCommentDto: CreateCommentDto): Promise<void> {
 		return;
 	}
