@@ -1,23 +1,23 @@
 import { PageOptionsDto } from './pageOptions.dto';
 
 export class PageMetaDto {
-	take: number;
+	limit: number;
+	page: number;
 	hasPreviousPage: boolean;
 	hasNextPage: boolean;
-	cursor: string;
+	totalPages: number;
 
 	constructor({
 		pageOptionsDto,
-		itemCount,
-		cursor,
+		total,
 	}: {
 		pageOptionsDto: PageOptionsDto;
-		itemCount: number;
-		cursor: string | null;
+		total: number;
 	}) {
-		this.take = pageOptionsDto.take;
-		this.hasPreviousPage = !!pageOptionsDto.cursor && itemCount == this.take;
-		this.hasNextPage = itemCount == this.take;
-		this.cursor = cursor;
+		this.limit = pageOptionsDto.limit;
+		this.page = pageOptionsDto.page;
+		this.totalPages = Math.ceil(total / pageOptionsDto.limit);
+		this.hasPreviousPage = pageOptionsDto.page != 1;
+		this.hasNextPage = pageOptionsDto.page < this.totalPages;
 	}
 }

@@ -8,8 +8,7 @@ import { AuthGuard } from './modules/auth/auth.guard';
 import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
-	imports: [UsersModule, DatabaseModule, AuthModule, CommentsModule],
-	controllers: [],
+	imports: [DatabaseModule, UsersModule, AuthModule, CommentsModule],
 	providers: [
 		{
 			provide: APP_GUARD,

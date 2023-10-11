@@ -7,6 +7,10 @@ class Env {
 	dbURL: string;
 
 	@IsString()
+	@IsNotEmpty({ message: 'DATABASE_NAME not found' })
+	dbName: string;
+
+	@IsString()
 	@IsNotEmpty({ message: 'JWT_SECRET not found' })
 	@NotEquals('unsecure_jwt_secret')
 	jwtSecret: string;
@@ -15,6 +19,7 @@ class Env {
 export const env: Env = plainToInstance(Env, {
 	jwtSecret: process.env.JWT_SECRET,
 	dbURL: process.env.DATABASE_URL,
+	dbName: process.env.DB_NAME,
 });
 
 const errors = validateSync(env);

@@ -10,8 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 
 import { env } from 'src/shared/config/env';
-
-import { RoleEnum } from '../users/entities/users.entity';
+import { UserRoleEnum } from 'src/domain/entities/user.entity';
 
 import { HAS_ROLES_KEY } from 'src/shared/decorators/HasRoles.decorator';
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/IsPublic.decorator';
@@ -30,7 +29,7 @@ export class AuthGuard implements CanActivate {
 			return true;
 		}
 
-		const requiredRoles = this.reflector.getAllAndOverride<RoleEnum[]>(
+		const requiredRoles = this.reflector.getAllAndOverride<UserRoleEnum[]>(
 			HAS_ROLES_KEY,
 			[context.getHandler(), context.getClass()],
 		);
