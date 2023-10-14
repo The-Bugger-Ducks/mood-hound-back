@@ -104,6 +104,43 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return await this.commentCollection.aggregate(agg).toArray();
 	}
 
+	async commentsPerState(): Promise<any> {
+		const agg = [
+			{
+				$group: {
+					_id: '$reviewer_state',
+					total: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$sort: {
+					_id: 1,
+				},
+			},
+			{
+				$replaceWith: {
+					value: '$total',
+					label: '$_id',
+				},
+			},
+		];
+
+		const aggregation = await this.commentCollection
+			.aggregate<{ label: string | number; value: number }>(agg)
+			.toArray();
+
+		const result: any = [['State', 'Avaliações']];
+
+		aggregation.forEach((item) => {
+			const key = Number.isNaN(item.label) ? 'OUTROS' : `BR-${item.label}`;
+			result.push([key, item.value]);
+		});
+
+		return result;
+	}
+
 	async create(createCommentDto: CreateCommentDto): Promise<void> {
 		return;
 	}
