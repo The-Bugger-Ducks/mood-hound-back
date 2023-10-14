@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 export enum CommentSentimentEnum {
 	POSITIVE = 'POSITIVO',
 	NEGATIVE = 'NEGATIVO',
@@ -15,6 +17,18 @@ export enum CommentTopicEnum {
 	OTHERS = 'OUTROS',
 }
 
+export type CommentMongoEntity = {
+	_id?: ObjectId;
+	product_id: string;
+	product_name: string;
+	text: string;
+	topic: string;
+	sentiment: CommentSentimentEnum;
+	reviewer_state: string;
+	created_at: Date;
+	processed_at: Date;
+};
+
 export class CommentEntity {
 	id: string;
 	productId: string;
@@ -22,7 +36,19 @@ export class CommentEntity {
 	text: string;
 	topic: string;
 	sentiment: CommentSentimentEnum;
-	rating: number;
+	reviewerState: string;
 	createdAt: Date;
-	addedAt: Date;
+	processedAt: Date;
+
+	constructor(data: Partial<CommentMongoEntity>) {
+		this.id = data._id.toString();
+		this.productId = data.product_id;
+		this.productName = data.product_name;
+		this.text = data.text;
+		this.topic = data.topic;
+		this.sentiment = data.sentiment;
+		this.reviewerState = data.reviewer_state;
+		this.createdAt = data.created_at;
+		this.processedAt = data.processed_at;
+	}
 }

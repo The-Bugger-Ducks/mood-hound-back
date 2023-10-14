@@ -1,34 +1,23 @@
 import {
 	Db,
 	Collection,
-	ObjectId,
 	OptionalId,
 	FindOptions,
 	Filter,
 	Document,
 } from 'mongodb';
 
-import { CommentEntity } from 'src/domain/entities';
+import { CommentEntity, CommentMongoEntity } from 'src/domain/entities';
 import { CommentRepository } from 'src/domain/repositories';
 import { CreateCommentDto, FilterCommentDto } from 'src/domain/dtos';
 import { PageOptionsDto } from 'src/shared/utils/paginator/pageOptions.dto';
-import { MongoUtils } from 'src/shared/utils/Mongo.util';
-
-type ICommentMongoEntity = Pick<
-	CommentEntity,
-	Exclude<keyof CommentEntity, 'id'>
-> & {
-	_id: ObjectId;
-};
 
 export class CommentRepositoryImpl implements CommentRepository {
-	readonly commentCollection: Collection<OptionalId<ICommentMongoEntity>>;
+	readonly commentCollection: Collection<OptionalId<CommentMongoEntity>>;
 
 	constructor(private mongodbClient: Db) {
 		this.commentCollection =
-			this.mongodbClient.collection<OptionalId<ICommentMongoEntity>>(
-				'comments',
-			);
+			this.mongodbClient.collection<OptionalId<CommentMongoEntity>>('comments');
 	}
 
 	async findAll(): Promise<CommentEntity[] | Error> {
@@ -50,7 +39,9 @@ export class CommentRepositoryImpl implements CommentRepository {
 				.find(filter, options)
 				.toArray();
 
-			const comments = MongoUtils.convertEntityMongoList(commentDocuments);
+			const comments = commentDocuments.map(
+				(comment) => new CommentEntity(comment),
+			);
 
 			return { comments, total };
 		} catch (error) {
@@ -118,7 +109,7 @@ export class CommentRepositoryImpl implements CommentRepository {
 	}
 
 	private paginationQuery(pagination: PageOptionsDto) {
-		const options: FindOptions<CommentEntity> = {
+		const options: FindOptions<CommentMongoEntity> = {
 			sort: { product_name: pagination.order },
 			limit: pagination.limit,
 			skip: (pagination.page - 1) * pagination.limit,
@@ -127,8 +118,8 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return options;
 	}
 
-	private filtersQuery(filters: FilterCommentDto): Filter<CommentEntity> {
-		const filter: Filter<CommentEntity> = {};
+	private filtersQuery(filters: FilterCommentDto): Filter<CommentMongoEntity> {
+		const filter: Filter<CommentMongoEntity> = {};
 
 		if (filters.comment && filters.topic) {
 			filter.text = { $regex: filters.comment, $options: 'i' };
@@ -140,11 +131,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 		}
 
 		if (filters.dateStart && filters.dateDone) {
-			filter.addedAt = { $gte: filters.dateStart, $lte: filters.dateDone };
+			filter.created_at = { $gte: filters.dateStart, $lte: filters.dateDone };
 		} else if (filters.dateStart) {
-			filter.addedAt = { $gte: filters.dateStart };
+			filter.created_at = { $gte: filters.dateStart };
 		} else if (filters.dateDone) {
-			filter.addedAt = { $lte: filters.dateDone };
+			filter.created_at = { $lte: filters.dateDone };
 		}
 
 		return filter;
