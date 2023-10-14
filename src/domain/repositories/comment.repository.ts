@@ -17,4 +17,5 @@ export interface CommentRepository extends IGenericRepository<CommentEntity> {
 
 	rankingOfTopics(): Promise<Document[]>;
 	timeSeriesDataTopic(): Promise<Document[]>;
+	commentsPerState(): Promise<any>;
 }
