@@ -4,6 +4,7 @@ import {
 	CommentEntity,
 	CommentSentimentEnum,
 	CommentTopicEnum,
+	CommentMongoEntity,
 } from './comment.entity';
 
 export {
@@ -12,4 +13,5 @@ export {
 	CommentEntity,
 	CommentSentimentEnum,
 	CommentTopicEnum,
+	CommentMongoEntity,
 };
