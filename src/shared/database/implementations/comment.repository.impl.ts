@@ -140,11 +140,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 			.aggregate<{ label: string | number; value: number }>(agg)
 			.toArray();
 
-		const result = {};
+		const result: any = [['State', 'Avaliações']];
 
 		aggregation.forEach((item) => {
 			const key = Number.isNaN(item.label) ? 'OUTROS' : `BR-${item.label}`;
-			result[key] = item.value;
+			result.push([key, item.value]);
 		});
 
 		return result;
