@@ -3,5 +3,5 @@ export abstract class IGenericRepository<T> {
 
 	abstract findOne(id: string): Promise<T | Error>;
 
-	abstract create(item: T): Promise<void>;
+	abstract create(item: Omit<T, 'id'>): Promise<void>;
 }

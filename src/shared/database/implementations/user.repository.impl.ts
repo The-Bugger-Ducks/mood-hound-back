@@ -21,7 +21,11 @@ export class UserRepositoryImpl implements UserRepository {
 				email: email,
 			});
 
-			return new UserEntity(userDocument);
+			if (userDocument) {
+				return new UserEntity(userDocument);
+			}
+
+			return null;
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
 		}
@@ -56,10 +60,7 @@ export class UserRepositoryImpl implements UserRepository {
 			const users = await this.userCollection
 				.find(filter, {
 					projection: {
-						_id: true,
-						name: true,
-						email: true,
-						role: true,
+						password: false,
 					},
 				})
 				.toArray();
@@ -78,10 +79,7 @@ export class UserRepositoryImpl implements UserRepository {
 				},
 				{
 					projection: {
-						_id: true,
-						name: true,
-						email: true,
-						role: true,
+						password: false,
 					},
 				},
 			);
