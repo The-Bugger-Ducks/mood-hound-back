@@ -1,22 +1,18 @@
-import { Db, Collection, ObjectId, OptionalId, Filter } from 'mongodb';
+import { Db, Collection, OptionalId, Filter } from 'mongodb';
 
 import { UserRepository } from 'src/domain/repositories';
 
 import { CreateUserDto, UpdateUserDto } from 'src/domain/dtos';
-import { UserEntity, UserRoleEnum } from 'src/domain/entities';
+import { UserEntity, UserMongoEntity, UserRoleEnum } from 'src/domain/entities';
 
 import { MongoUtils } from 'src/shared/utils/Mongo.util';
 
-type IUserMongoEntity = Pick<UserEntity, Exclude<keyof UserEntity, 'id'>> & {
-	_id: ObjectId;
-};
-
 export class UserRepositoryImpl implements UserRepository {
-	readonly userCollection: Collection<OptionalId<IUserMongoEntity>>;
+	readonly userCollection: Collection<OptionalId<UserMongoEntity>>;
 
 	constructor(private mongodbClient: Db) {
 		this.userCollection =
-			this.mongodbClient.collection<OptionalId<IUserMongoEntity>>('users');
+			this.mongodbClient.collection<OptionalId<UserMongoEntity>>('users');
 	}
 
 	async findByEmail(email: string): Promise<UserEntity> {
@@ -25,7 +21,7 @@ export class UserRepositoryImpl implements UserRepository {
 				email: email,
 			});
 
-			return MongoUtils.convertEntityMongo(userDocument);
+			return new UserEntity(userDocument);
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
 		}
@@ -33,7 +29,9 @@ export class UserRepositoryImpl implements UserRepository {
 
 	async findAll(): Promise<UserEntity[] | Error> {
 		try {
-			return await this.userCollection.find({}).toArray();
+			const userDocuments = await this.userCollection.find({}).toArray();
+
+			return userDocuments.map((user) => new UserEntity(user));
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
 		}
@@ -66,7 +64,7 @@ export class UserRepositoryImpl implements UserRepository {
 				})
 				.toArray();
 
-			return MongoUtils.convertEntityMongoList(users);
+			return users.map((user) => new UserEntity(user));
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
 		}
@@ -88,7 +86,7 @@ export class UserRepositoryImpl implements UserRepository {
 				},
 			);
 
-			return MongoUtils.convertEntityMongo(user);
+			return new UserEntity(user);
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
 		}

@@ -1,4 +1,4 @@
-import { UserEntity, UserRoleEnum } from './user.entity';
+import { UserEntity, UserMongoEntity, UserRoleEnum } from './user.entity';
 
 import {
 	CommentEntity,
@@ -9,6 +9,7 @@ import {
 
 export {
 	UserEntity,
+	UserMongoEntity,
 	UserRoleEnum,
 	CommentEntity,
 	CommentSentimentEnum,
