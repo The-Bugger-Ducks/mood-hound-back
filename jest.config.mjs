@@ -10,7 +10,9 @@ export default {
 	transform: {
 		'^.+\\.(t|j)s$': 'ts-jest',
 	},
-	collectCoverageFrom: ['**/*.(t|j)s'],
-	coverageDirectory: '../coverage',
+	collectCoverage: true,
+	coverageDirectory: 'coverage',
+	collectCoverageFrom: ['src/**/*.(t|j)s'],
+	coverageReporters: ["json", "html", "text", 'lcov'],
 	testEnvironment: 'node',
 };
