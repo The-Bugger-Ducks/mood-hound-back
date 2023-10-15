@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
-import { DatabaseService } from 'src/shared/database/services/database.service';
+import { DatabaseService } from '../../shared/database/services/database.service';
 
 import { SigninDto } from './dto/signin.dto';
 
@@ -12,7 +12,7 @@ export class AuthService {
 	constructor(
 		private readonly databaseService: DatabaseService,
 		private readonly jwtService: JwtService,
-	) {}
+	) { }
 
 	async signin(signinDto: SigninDto) {
 		const { email, password } = signinDto;

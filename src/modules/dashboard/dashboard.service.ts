@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/shared/database/services/database.service';
+import { DatabaseService } from '../../shared/database/services/database.service';
 
 @Injectable()
 export class DashboardService {
-	constructor(private readonly databaseService: DatabaseService) {}
+	constructor(private readonly databaseService: DatabaseService) { }
 
 	async findAll() {
 		const rankingOfTopics =

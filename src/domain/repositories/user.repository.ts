@@ -1,6 +1,6 @@
-import { IGenericRepository } from 'src/domain/abstractions/generic-repository.abstract';
+import { IGenericRepository } from '../../domain/abstractions/generic-repository.abstract';
 
-import { UserEntity, UserRoleEnum } from 'src/domain/entities/user.entity';
+import { UserEntity, UserRoleEnum } from '../../domain/entities/user.entity';
 
 export interface UserRepository extends IGenericRepository<UserEntity> {
 	findMany(where: Partial<UserEntity>): Promise<UserEntity[]>;

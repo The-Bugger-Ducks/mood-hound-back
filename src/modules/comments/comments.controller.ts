@@ -2,18 +2,18 @@ import { Controller, Get, Query } from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
 
-import { IsPublic } from 'src/shared/decorators/IsPublic.decorator';
+import { IsPublic } from '../../shared/decorators/IsPublic.decorator';
 
-import { PageOptionsDto } from 'src/shared/utils/paginator/pageOptions.dto';
+import { PageOptionsDto } from '../../shared/utils/paginator/pageOptions.dto';
 
-import { FilterCommentDto } from 'src/domain/dtos';
+import { FilterCommentDto } from '../../domain/dtos';
 
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('comments')
 @ApiTags('comments')
 export class CommentsController {
-	constructor(private readonly commentsService: CommentsService) {}
+	constructor(private readonly commentsService: CommentsService) { }
 
 	@Get()
 	@IsPublic()

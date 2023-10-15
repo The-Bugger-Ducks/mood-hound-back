@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { DatabaseService } from 'src/shared/database/services/database.service';
+import { DatabaseService } from '../../shared/database/services/database.service';
 
 import {
 	PageDto,
 	PageOptionsDto,
 	PageMetaDto,
-} from 'src/shared/utils/paginator';
+} from '../../shared/utils/paginator';
 
-import { FilterCommentDto } from 'src/domain/dtos';
+import { FilterCommentDto } from '../../domain/dtos';
 
 @Injectable()
 export class CommentsService {
-	constructor(private readonly databaseService: DatabaseService) {}
+	constructor(private readonly databaseService: DatabaseService) { }
 
 	async findAll(pagination: PageOptionsDto, filters: FilterCommentDto) {
 		const { comments, total } = await this.databaseService.comments.findMany(

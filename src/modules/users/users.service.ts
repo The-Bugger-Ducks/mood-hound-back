@@ -2,19 +2,19 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { hash } from 'bcryptjs';
 
-import { DatabaseService } from 'src/shared/database/services/database.service';
+import { DatabaseService } from './../../shared/database/services/database.service';
 
-import { UserRoleEnum } from 'src/domain/entities/user.entity';
+import { UserRoleEnum } from '../../domain/entities/user.entity';
 
 import {
 	CreateUserDto,
 	UpdateUserDto,
 	UpdateUserRoleDto,
-} from 'src/domain/dtos';
+} from '../../domain/dtos';
 
 @Injectable()
 export class UsersService {
-	constructor(private readonly databaseService: DatabaseService) {}
+	constructor(private readonly databaseService: DatabaseService) { }
 
 	getUserById(userId: string) {
 		return this.databaseService.users.findOne(userId);
