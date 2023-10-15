@@ -10,22 +10,21 @@ import { MongoClient } from 'mongodb';
 
 import { DATABASE_PROVIDER_NAME } from '../database.module';
 
-import { env } from 'src/shared/config/env';
+import { env } from '../../../shared/config/env';
 
-import { IDataServices } from 'src/domain/abstractions';
-import { CommentRepository, UserRepository } from 'src/domain/repositories';
+import { IDataServices } from '../../../domain/abstractions';
+import { CommentRepository, UserRepository } from '../../../domain/repositories';
 
 import { UserRepositoryImpl, CommentRepositoryImpl } from '../implementations';
 
 @Global()
 @Injectable()
 export class DatabaseService
-	implements IDataServices, OnApplicationBootstrap, OnModuleDestroy
-{
+	implements IDataServices, OnApplicationBootstrap, OnModuleDestroy {
 	public users: UserRepository;
 	public comments: CommentRepository;
 
-	constructor(@Inject(DATABASE_PROVIDER_NAME) private client: MongoClient) {}
+	constructor(@Inject(DATABASE_PROVIDER_NAME) private client: MongoClient) { }
 
 	async onModuleDestroy() {
 		await this.client

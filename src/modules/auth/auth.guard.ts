@@ -9,15 +9,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 
-import { env } from 'src/shared/config/env';
-import { UserRoleEnum } from 'src/domain/entities/user.entity';
+import { env } from '../../shared/config/env';
+import { UserRoleEnum } from '../../domain/entities/user.entity';
 
-import { HAS_ROLES_KEY } from 'src/shared/decorators/HasRoles.decorator';
-import { IS_PUBLIC_KEY } from 'src/shared/decorators/IsPublic.decorator';
+import { HAS_ROLES_KEY } from '../../shared/decorators/HasRoles.decorator';
+import { IS_PUBLIC_KEY } from '../../shared/decorators/IsPublic.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-	constructor(private jwtService: JwtService, private reflector: Reflector) {}
+	constructor(private jwtService: JwtService, private reflector: Reflector) { }
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [

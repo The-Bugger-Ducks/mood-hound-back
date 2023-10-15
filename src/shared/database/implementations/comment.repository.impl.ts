@@ -7,10 +7,10 @@ import {
 	Document,
 } from 'mongodb';
 
-import { CommentEntity, CommentMongoEntity } from 'src/domain/entities';
-import { CommentRepository } from 'src/domain/repositories';
-import { CreateCommentDto, FilterCommentDto } from 'src/domain/dtos';
-import { PageOptionsDto } from 'src/shared/utils/paginator/pageOptions.dto';
+import { CommentEntity, CommentMongoEntity } from '../../../domain/entities';
+import { CommentRepository } from '../../../domain/repositories';
+import { CreateCommentDto, FilterCommentDto } from '../../../domain/dtos';
+import { PageOptionsDto } from '../../../shared/utils/paginator/pageOptions.dto';
 
 export class CommentRepositoryImpl implements CommentRepository {
 	readonly commentCollection: Collection<OptionalId<CommentMongoEntity>>;

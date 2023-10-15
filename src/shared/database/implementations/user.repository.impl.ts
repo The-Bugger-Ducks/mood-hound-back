@@ -1,11 +1,11 @@
 import { Db, Collection, OptionalId, Filter } from 'mongodb';
 
-import { UserRepository } from 'src/domain/repositories';
+import { UserRepository } from '../../../domain/repositories';
 
-import { CreateUserDto, UpdateUserDto } from 'src/domain/dtos';
-import { UserEntity, UserMongoEntity, UserRoleEnum } from 'src/domain/entities';
+import { CreateUserDto, UpdateUserDto } from '../../../domain/dtos';
+import { UserEntity, UserMongoEntity, UserRoleEnum } from '../../../domain/entities';
 
-import { MongoUtils } from 'src/shared/utils/Mongo.util';
+import { MongoUtils } from '../../../shared/utils/Mongo.util';
 
 export class UserRepositoryImpl implements UserRepository {
 	readonly userCollection: Collection<OptionalId<UserMongoEntity>>;
@@ -83,6 +83,10 @@ export class UserRepositoryImpl implements UserRepository {
 					},
 				},
 			);
+
+			if (!user) {
+				return null;
+			}
 
 			return new UserEntity(user);
 		} catch (error) {

@@ -9,7 +9,7 @@ import { users } from '../mocks/user.mock';
 
 import { UserRoleEnum } from '../../../domain/entities';
 
-const client = new MongoClient(process.env.DATABASE_URL);
+const client = new MongoClient(`${process.env.DATABASE_URL}`);
 
 async function clientDb() {
 	await client

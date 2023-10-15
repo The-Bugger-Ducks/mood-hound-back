@@ -15,23 +15,23 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 
-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId.decorator';
+import { ActiveUserId } from '../../shared/decorators/ActiveUserId.decorator';
 
-import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
+import { OptionalParseEnumPipe } from '../../shared/pipes/OptionalParseEnumPipe';
 
-import { UserRoleEnum } from 'src/domain/entities/user.entity';
+import { UserRoleEnum } from '../../domain/entities/user.entity';
 
 import {
 	CreateUserDto,
 	UpdateUserDto,
 	UpdateUserRoleDto,
 } from '../../domain/dtos';
-import { ParseObjectIDPipe } from 'src/shared/pipes/ParseObjectIDPipe';
+import { ParseObjectIDPipe } from '../../shared/pipes/ParseObjectIDPipe';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) { }
 
 	@Get('/me')
 	me(@ActiveUserId() userId: string) {
@@ -48,6 +48,8 @@ export class UsersController {
 		@Query('email') email?: string,
 		@Query('role', new OptionalParseEnumPipe(UserRoleEnum)) role?: UserRoleEnum,
 	) {
+		console.log('\n\n\n\n\n\n', userId, '\n\n\n\n\n',);
+
 		return this.usersService.search(userId, {
 			name,
 			email,
