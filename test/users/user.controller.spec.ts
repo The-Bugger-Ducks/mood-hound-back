@@ -9,6 +9,7 @@ import { UserRoleEnum } from '../../src/domain/entities/user.entity';
 import { DatabaseService } from '../../src/shared/database/services/database.service';
 import { CreateUserDto } from '../../src/domain/dtos/user/create.user.dto';
 import { DatabaseModule } from '../../src/shared/database/database.module';
+import { MongoUtils } from '../../src/shared/utils/Mongo.util';
 
 const mockUsers = [
 	{
@@ -30,6 +31,7 @@ const mockUsers = [
 describe('User', () => {
 	let usersController: UsersController;
 	let databaseService: DatabaseService;
+	let usersService: UsersService;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -40,9 +42,12 @@ describe('User', () => {
 
 		usersController = module.get<UsersController>(UsersController);
 		databaseService = module.get<DatabaseService>(DatabaseService);
+		usersService = module.get<UsersService>(UsersService);
+
+		databaseService.onApplicationBootstrap();
 	});
 
-	afterEach(async () => await databaseService.onModuleDestroy());
+	// afterEach(async () => await databaseService.onModuleDestroy());
 
 	// afterAll(async () => await databaseService.users.deleteMany());
 
@@ -51,16 +56,17 @@ describe('User', () => {
 		expect(databaseService).toBeDefined();
 	});
 
-	// it('should return a list of users', async () => {
-	// 	// Mockando o serviço de usuário para que retorne a lista de usuários que definimos acima.
-	// 	jest.spyOn(usersController, 'search').mockImplementation();
-	// 	// Fazendo uma requisição GET para a rota de busca de usuários.
-	// 	const response = await usersController.search(
-	// 		'6514b0ce34a6b1aa0a4a49b2',
-	// 	);
-	// 	// Verificando se o resultado da resposta é igual à lista de usuários que definimos acima.
-	// 	expect(response).toEqual(mockUsers);
-	// });
+
+	it('should return a list of users', async () => {
+		jest.spyOn(usersService, 'search').mockImplementation(async () => mockUsers);
+
+		const response = await usersService.search(
+			'6514b0ce34a6b1aa0a4a49b2', {}
+		);
+
+		expect(response).toEqual(mockUsers);
+	});
+
 
 	it('should to create and delete the Jest user', async () => {
 		const user: CreateUserDto = {

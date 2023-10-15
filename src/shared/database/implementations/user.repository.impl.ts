@@ -84,6 +84,10 @@ export class UserRepositoryImpl implements UserRepository {
 				},
 			);
 
+			if (!user) {
+				return null;
+			}
+
 			return new UserEntity(user);
 		} catch (error) {
 			throw new Error(`Erro ao realizar consulta ${error}`);
