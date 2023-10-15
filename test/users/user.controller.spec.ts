@@ -9,7 +9,6 @@ import { UserRoleEnum } from '../../src/domain/entities/user.entity';
 import { DatabaseService } from '../../src/shared/database/services/database.service';
 import { CreateUserDto } from '../../src/domain/dtos/user/create.user.dto';
 import { DatabaseModule } from '../../src/shared/database/database.module';
-import { MongoUtils } from '../../src/shared/utils/Mongo.util';
 
 const mockUsers = [
 	{
@@ -47,9 +46,7 @@ describe('User', () => {
 		databaseService.onApplicationBootstrap();
 	});
 
-	// afterEach(async () => await databaseService.onModuleDestroy());
-
-	// afterAll(async () => await databaseService.users.deleteMany());
+	afterEach(async () => await databaseService.onModuleDestroy());
 
 	it('should be defined', () => {
 		expect(usersController).toBeDefined();
