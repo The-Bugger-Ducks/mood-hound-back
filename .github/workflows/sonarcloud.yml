@@ -12,7 +12,7 @@ jobs:
     environment: development
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DB_NAME: ${{ secrets.DATABASE_NAME }}
+      DB_NAME: ${{ secrets.DB_NAME }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - uses: actions/checkout@v3
