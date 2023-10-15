@@ -68,7 +68,7 @@ describe('User', () => {
 	});
 
 
-	it('should to create and delete the Jest user', async () => {
+	it('should create and delete the Jest user', async () => {
 		const user: CreateUserDto = {
 			name: 'Jest',
 			email: 'jest@test.com',
@@ -87,4 +87,26 @@ describe('User', () => {
 
 		expect(deletedUser).toBeNull();
 	});
+
+	it('should not create two Jest users', async () => {
+		const user: CreateUserDto = {
+			name: 'Jest',
+			email: 'jest@test.com',
+			password: '1231231234',
+			role: UserRoleEnum.VIEWER,
+		};
+
+		await usersController.create(user);
+		const userFound = await databaseService.users.findByEmail(user.email);
+		expect(userFound).toBeDefined();
+
+		try {
+			await usersController.create(user);
+			expect(true).toBe(false);
+		} catch (e) {
+			expect(e.message).toBe("This email is already in use.");
+			await usersController.delete(userFound.id);
+		}
+	});
+
 });
