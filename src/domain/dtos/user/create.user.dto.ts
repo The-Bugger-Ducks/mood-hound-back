@@ -9,21 +9,21 @@ import {
 import { UserRoleEnum } from '../../../domain/entities/user.entity';
 
 export class CreateUserDto {
-	// @IsString()
-	// @IsNotEmpty()
+	@IsString()
+	@IsNotEmpty()
 	name: string;
 
-	// @IsString()
-	// @IsNotEmpty()
-	// @IsEmail()
+	@IsString()
+	@IsNotEmpty()
+	@IsEmail()
 	email: string;
 
-	// @IsString()
-	// @IsNotEmpty()
-	// @MinLength(8)
+	@IsString()
+	@IsNotEmpty()
+	@MinLength(8)
 	password: string;
 
-	// @IsNotEmpty()
-	// @IsEnum(UserRoleEnum)
+	@IsNotEmpty()
+	@IsEnum(UserRoleEnum)
 	role: UserRoleEnum;
 }
