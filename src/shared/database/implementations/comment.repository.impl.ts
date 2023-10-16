@@ -9,7 +9,7 @@ import {
 
 import { CommentEntity, CommentMongoEntity } from '../../../domain/entities';
 import { CommentRepository } from '../../../domain/repositories';
-import { CreateCommentDto, FilterCommentDto } from '../../../domain/dtos';
+import { CreateCommentDto, FilterCommentDto, FilterDashboardDto } from '../../../domain/dtos';
 import { PageOptionsDto } from '../../../shared/utils/paginator/pageOptions.dto';
 
 export class CommentRepositoryImpl implements CommentRepository {
@@ -53,8 +53,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return;
 	}
 
-	async rankingOfTopics(): Promise<Document[]> {
+	async rankingOfTopics(filters: FilterDashboardDto): Promise<Document[]> {
+		const filter = this.dashboardFiltersQuery(filters)
+
 		const pipeline = [
+			{ $match: filter},
 			{
 				$group: {
 					_id: '$topic',
@@ -66,11 +69,14 @@ export class CommentRepositoryImpl implements CommentRepository {
 			{ $limit: 5 },
 		];
 
-		return await this.commentCollection.aggregate(pipeline).toArray();
+		return await this.commentCollection.aggregate(pipeline).toArray()
 	}
 
-	async timeSeriesDataTopic(): Promise<Document[]> {
+	async timeSeriesDataTopic(filters: FilterDashboardDto): Promise<Document[]> {
+		const filter = this.dashboardFiltersQuery(filters)
+
 		const agg = [
+			{ $match: filter},
 			{
 				$group: {
 					_id: {
@@ -104,8 +110,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return await this.commentCollection.aggregate(agg).toArray();
 	}
 
-	async commentsPerState(): Promise<any> {
+	async commentsPerState(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
 		const agg = [
+			{ $match: filter},
 			{
 				$group: {
 					_id: '$reviewer_state',
@@ -168,13 +177,36 @@ export class CommentRepositoryImpl implements CommentRepository {
 		}
 
 		if (filters.dateStart && filters.dateDone) {
-			filter.created_at = { $gte: filters.dateStart, $lte: filters.dateDone };
+			filter.created_at = { $gte: new Date(filters.dateStart), $lte: new Date(filters.dateDone) };
 		} else if (filters.dateStart) {
-			filter.created_at = { $gte: filters.dateStart };
+			filter.created_at = { $gte: new Date(filters.dateStart) };
 		} else if (filters.dateDone) {
-			filter.created_at = { $lte: filters.dateDone };
+			filter.created_at = { $lte: new Date(filters.dateDone) };
 		}
 
 		return filter;
+	}
+
+	private dashboardFiltersQuery(filters: FilterDashboardDto): Filter<CommentMongoEntity> {
+		const filter: Filter<CommentMongoEntity> = {};
+
+		if (filters.state && filters.topic) {
+			filter.reviewer_state = { $regex: filters.state, $options: 'i' };
+			filter.topic = { $regex: filters.topic, $options: 'i' };
+		} else if (filters.state) {
+			filter.reviewer_state = { $regex: filters.state, $options: 'i' };
+		} else if (filters.topic) {
+			filter.topic = { $regex: filters.topic, $options: 'i' };
+		}
+
+		if (filters.dateStart && filters.dateEnd) {
+			filter.created_at = { $gte: new Date(filters.dateStart), $lte: new Date(filters.dateEnd) };
+		} else if (filters.dateStart) {
+			filter.created_at = { $gte: new Date(filters.dateStart) };
+		} else if (filters.dateEnd) {
+			filter.created_at = { $lte: new Date(filters.dateEnd) };
+		}
+
+		return filter
 	}
 }
