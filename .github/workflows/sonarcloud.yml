@@ -9,10 +9,28 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    environment: development
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn jest --coverage
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

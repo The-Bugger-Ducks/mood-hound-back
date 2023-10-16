@@ -6,7 +6,7 @@ import {
 	MinLength,
 } from 'class-validator';
 
-import { RoleEnum } from '../entities/users.entity';
+import { UserRoleEnum } from '../../../domain/entities/user.entity';
 
 export class CreateUserDto {
 	@IsString()
@@ -24,6 +24,6 @@ export class CreateUserDto {
 	password: string;
 
 	@IsNotEmpty()
-	@IsEnum(RoleEnum)
-	role: RoleEnum;
+	@IsEnum(UserRoleEnum)
+	role: UserRoleEnum;
 }

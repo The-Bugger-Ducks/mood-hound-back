@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { CommentSentimentEnum } from '../entities/comment.entity';
+import { CommentSentimentEnum } from '../../../domain/entities/comment.entity';
 
 export class CreateCommentDto {
 	@IsString()

@@ -1,6 +1,6 @@
 import { IsEnum, IsMongoId, IsNotEmpty, IsUppercase } from 'class-validator';
 
-import { RoleEnum } from '../entities/users.entity';
+import { UserRoleEnum } from '../../../domain/entities/user.entity';
 
 export class UpdateUserRoleDto {
 	@IsNotEmpty()
@@ -9,6 +9,6 @@ export class UpdateUserRoleDto {
 
 	@IsNotEmpty()
 	@IsUppercase()
-	@IsEnum(RoleEnum)
-	role: RoleEnum;
+	@IsEnum(UserRoleEnum)
+	role: UserRoleEnum;
 }

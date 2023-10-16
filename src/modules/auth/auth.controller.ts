@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 
-import { IsPublic } from 'src/shared/decorators/IsPublic.decorator';
+import { IsPublic } from '../../shared/decorators/IsPublic.decorator';
 
 import { SigninDto } from './dto/signin.dto';
 
@@ -11,7 +11,7 @@ import { SigninDto } from './dto/signin.dto';
 @IsPublic()
 @ApiTags('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(private readonly authService: AuthService) { }
 
 	@Post('signin')
 	signin(@Body() signinDto: SigninDto) {
