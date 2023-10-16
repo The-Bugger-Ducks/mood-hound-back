@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { FilterDashboardDto } from '../../domain/dtos/dashboard/filter.dashboard.dto';
 
 @Controller('dashboard')
 export class DashboardController {
 	constructor(private readonly dashboardService: DashboardService) {}
 
 	@Get()
-	findAll() {
-		return this.dashboardService.findAll();
+	findAll(
+		@Query() filters: FilterDashboardDto,
+	) {
+		return this.dashboardService.findAll(filters);
 	}
 }

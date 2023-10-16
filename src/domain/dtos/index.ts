@@ -5,10 +5,13 @@ import { UpdateUserRoleDto } from './user/update.userRole.dto';
 import { CreateCommentDto } from './comment/create.comment.dto';
 import { FilterCommentDto } from './comment/filter.comment.dto';
 
+import { FilterDashboardDto } from './dashboard/filter.dashboard.dto';
+
 export {
 	CreateUserDto,
 	UpdateUserDto,
 	UpdateUserRoleDto,
 	CreateCommentDto,
 	FilterCommentDto,
+	FilterDashboardDto
 };
