@@ -38,4 +38,6 @@ async function main() {
 
 main()
 	.catch((e) => console.error(e))
-	.finally(() => client.close());
+	.finally(async () => {
+		await client.close()
+	});
