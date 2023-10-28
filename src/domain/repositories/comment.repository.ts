@@ -26,4 +26,8 @@ export interface CommentRepository extends IGenericRepository<CommentEntity> {
 	commentsPerState(
 		filters: FilterDashboardDto
 	): Promise<any>;
+
+	commentsPerSentiment(
+		filters: FilterDashboardDto
+	): Promise<any>;
 }

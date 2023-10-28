@@ -16,6 +16,9 @@ export class DashboardService {
 		const commentsPerState =
 			await this.databaseService.comments.commentsPerState(filters);
 
-		return { rankingOfTopics, timeSeriesDataTopic, commentsPerState };
+		const commentsPerSentiment =
+			await this.databaseService.comments.commentsPerSentiment(filters);
+
+		return { rankingOfTopics, timeSeriesDataTopic, commentsPerState, commentsPerSentiment };
 	}
 }
