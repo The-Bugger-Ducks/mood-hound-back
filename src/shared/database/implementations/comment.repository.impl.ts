@@ -53,24 +53,6 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return;
 	}
 
-	async rankingOfTopics(filters: FilterDashboardDto): Promise<Document[]> {
-		const filter = this.dashboardFiltersQuery(filters)
-
-		const pipeline = [
-			{ $match: filter },
-			{
-				$group: {
-					_id: '$topic',
-					value: { $sum: 1 },
-				},
-			},
-			{ $project: { _id: 0, label: '$_id', value: 1 } },
-			{ $sort: { value: -1 } },
-		];
-
-		return await this.commentCollection.aggregate(pipeline).toArray()
-	}
-
 	async timeSeriesDataTopic(filters: FilterDashboardDto): Promise<Document[]> {
 		const filter = this.dashboardFiltersQuery(filters)
 
@@ -149,7 +131,7 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return result;
 	}
 
-	async commentsPerSentiment(filters: FilterDashboardDto): Promise<any> {
+	async rankingOfTopics(filters: FilterDashboardDto): Promise<any> {
 		const filter = this.dashboardFiltersQuery(filters)
 
 		const agg = [
@@ -227,7 +209,6 @@ export class CommentRepositoryImpl implements CommentRepository {
 		}, { total: 0, positive: 0, negative: 0, neutral: 0 })
 
 		aggregations.forEach(aggregation => aggregation.negative = -(aggregation.negative))
-
 
 		return { resume, topics: aggregations }
 	}
