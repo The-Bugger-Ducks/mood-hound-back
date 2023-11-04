@@ -216,13 +216,15 @@ export class CommentRepositoryImpl implements CommentRepository {
 	async commentsPerAgeGroup(filters: FilterDashboardDto): Promise<any> {
 		const filter = this.dashboardFiltersQuery(filters)
 
+		const currentYear = new Date().getFullYear()
+
 		const agg = [
 			{ $match: filter },
 			{
 				$project: {
 					age: {
 						$subtract: [
-							2023,
+							currentYear,
 							'$reviewer_birth_year'
 						]
 					}
