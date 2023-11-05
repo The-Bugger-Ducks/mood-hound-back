@@ -26,4 +26,12 @@ export interface CommentRepository extends IGenericRepository<CommentEntity> {
 	commentsPerState(
 		filters: FilterDashboardDto
 	): Promise<any>;
+
+	commentsPerAgeGroup(
+		filters: FilterDashboardDto
+	): Promise<any>;
+
+	commentsPerGender(
+		filters: FilterDashboardDto
+	): Promise<any>;
 }

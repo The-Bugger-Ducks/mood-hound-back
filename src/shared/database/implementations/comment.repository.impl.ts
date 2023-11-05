@@ -213,6 +213,115 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return { resume, topics: aggregations }
 	}
 
+	async commentsPerAgeGroup(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
+		const currentYear = new Date().getFullYear()
+
+		const agg = [
+			{ $match: filter },
+			{
+				$project: {
+					age: {
+						$subtract: [
+							currentYear,
+							'$reviewer_birth_year'
+						]
+					}
+				}
+			},
+			{
+				$bucket: {
+					groupBy: '$age',
+					boundaries: [0, 17, 24, 34, 44, 59],
+					default: 'Other'
+				}
+			},
+			{
+				$project: {
+					_id: 0,
+					group: {
+						$switch: {
+							branches: [
+								{
+									case: { $lt: ['$_id', 17] },
+									then: '0 à 17 anos'
+								},
+								{
+									case: { $lt: ['$_id', 24] },
+									then: '18 à 24 anos'
+								},
+								{
+									case: { $lt: ['$_id', 34] },
+									then: '25 à 34 anos'
+								},
+								{
+									case: { $lt: ['$_id', 44] },
+									then: '35 à 44 anos'
+								},
+								{
+									case: { $lt: ['$_id', 55] },
+									then: '55 à 59 anos'
+								}
+							],
+							default: '+60 anos'
+						}
+					},
+					count: 1
+				}
+			}
+		];
+
+		const aggregations = await this.commentCollection
+			.aggregate<{ group: string; count: number; }>(agg)
+			.toArray();
+
+		const labels = aggregations.map(aggregation => aggregation.group)
+		const values = aggregations.map(aggregation => aggregation.count)
+
+		return { labels: labels, values: values }
+	}
+
+	async commentsPerGender(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
+		const agg = [
+			{ $match: filter },
+			{
+				$group: {
+					_id: "$reviewer_gender",
+					total: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$sort: {
+					_id: -1,
+				},
+			},
+			{
+				$replaceWith: {
+					gender: '$_id',
+					total: '$total'
+				},
+			},
+		];
+
+		const aggregations = await this.commentCollection
+			.aggregate<{ gender: string; total: number; }>(agg)
+			.toArray();
+
+		const labels = aggregations.map(aggregation => {
+			if (aggregation.gender === "M") return "Masculino"
+			if (aggregation.gender === "F") return "Feminino"
+			return "Não informado"
+		})
+		const values = aggregations.map(aggregation => aggregation.total)
+
+		return { labels: labels, values: values }
+	}
+
 	async create(createCommentDto: CreateCommentDto): Promise<void> {
 		return;
 	}
