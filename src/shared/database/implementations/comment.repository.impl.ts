@@ -7,7 +7,7 @@ import {
 	Document,
 } from 'mongodb';
 
-import { CommentEntity, CommentMongoEntity } from '../../../domain/entities';
+import { CommentEntity, CommentMongoEntity, CommentSentimentEnum } from '../../../domain/entities';
 import { CommentRepository } from '../../../domain/repositories';
 import { CreateCommentDto, FilterCommentDto, FilterDashboardDto } from '../../../domain/dtos';
 import { PageOptionsDto } from '../../../shared/utils/paginator/pageOptions.dto';
@@ -53,30 +53,11 @@ export class CommentRepositoryImpl implements CommentRepository {
 		return;
 	}
 
-	async rankingOfTopics(filters: FilterDashboardDto): Promise<Document[]> {
-		const filter = this.dashboardFiltersQuery(filters)
-
-		const pipeline = [
-			{ $match: filter},
-			{
-				$group: {
-					_id: '$topic',
-					value: { $sum: 1 },
-				},
-			},
-			{ $project: { _id: 0, label: '$_id', value: 1 } },
-			{ $sort: { value: -1 } },
-			{ $limit: 5 },
-		];
-
-		return await this.commentCollection.aggregate(pipeline).toArray()
-	}
-
 	async timeSeriesDataTopic(filters: FilterDashboardDto): Promise<Document[]> {
 		const filter = this.dashboardFiltersQuery(filters)
 
 		const agg = [
-			{ $match: filter},
+			{ $match: filter },
 			{
 				$group: {
 					_id: {
@@ -114,7 +95,7 @@ export class CommentRepositoryImpl implements CommentRepository {
 		const filter = this.dashboardFiltersQuery(filters)
 
 		const agg = [
-			{ $match: filter},
+			{ $match: filter },
 			{
 				$group: {
 					_id: '$reviewer_state',
@@ -148,6 +129,197 @@ export class CommentRepositoryImpl implements CommentRepository {
 		});
 
 		return result;
+	}
+
+	async rankingOfTopics(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
+		const agg = [
+			{ $match: filter },
+			{
+				$group: {
+					_id: {
+						topic: "$topic",
+					},
+					positive: {
+						$sum: {
+							$cond: {
+								if: {
+									$eq: ['$sentiment', CommentSentimentEnum.POSITIVE]
+								},
+								then: 1,
+								else: 0
+							}
+						}
+					},
+					negative: {
+						$sum: {
+							$cond: {
+								if: {
+									$eq: ['$sentiment', CommentSentimentEnum.NEGATIVE]
+								},
+								then: 1,
+								else: 0
+							}
+						}
+					},
+					neutral: {
+						$sum: {
+							$cond: {
+								if: {
+									$eq: ['$sentiment', CommentSentimentEnum.NEUTRAL]
+								},
+								then: 1,
+								else: 0
+							}
+						}
+					},
+					total: {
+						$count: {},
+					},
+				},
+			},
+			{
+				$sort: {
+					total: -1,
+				},
+			},
+			{
+				$replaceWith: {
+					topic: "$_id.topic",
+					positive: "$positive",
+					negative: "$negative",
+					neutral: "$neutral",
+					total: "$total",
+				},
+			},
+		];
+
+		const aggregations = await this.commentCollection
+			.aggregate<{ topic: string; positive: number; negative: number; neutral: number; total: number }>(agg)
+			.toArray();
+
+		const resume = aggregations.reduce((acc, value) => {
+			return {
+				total: acc.total + value.total,
+				positive: acc.positive + value.positive,
+				negative: acc.negative + value.negative,
+				neutral: acc.neutral + value.neutral,
+			}
+		}, { total: 0, positive: 0, negative: 0, neutral: 0 })
+
+		aggregations.forEach(aggregation => aggregation.negative = -(aggregation.negative))
+
+		return { resume, topics: aggregations }
+	}
+
+	async commentsPerAgeGroup(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
+		const currentYear = new Date().getFullYear()
+
+		const agg = [
+			{ $match: filter },
+			{
+				$project: {
+					age: {
+						$subtract: [
+							currentYear,
+							'$reviewer_birth_year'
+						]
+					}
+				}
+			},
+			{
+				$bucket: {
+					groupBy: '$age',
+					boundaries: [0, 17, 24, 34, 44, 59],
+					default: 'Other'
+				}
+			},
+			{
+				$project: {
+					_id: 0,
+					group: {
+						$switch: {
+							branches: [
+								{
+									case: { $lt: ['$_id', 17] },
+									then: '0 à 17 anos'
+								},
+								{
+									case: { $lt: ['$_id', 24] },
+									then: '18 à 24 anos'
+								},
+								{
+									case: { $lt: ['$_id', 34] },
+									then: '25 à 34 anos'
+								},
+								{
+									case: { $lt: ['$_id', 44] },
+									then: '35 à 44 anos'
+								},
+								{
+									case: { $lt: ['$_id', 55] },
+									then: '55 à 59 anos'
+								}
+							],
+							default: '+60 anos'
+						}
+					},
+					count: 1
+				}
+			}
+		];
+
+		const aggregations = await this.commentCollection
+			.aggregate<{ group: string; count: number; }>(agg)
+			.toArray();
+
+		const labels = aggregations.map(aggregation => aggregation.group)
+		const values = aggregations.map(aggregation => aggregation.count)
+
+		return { labels: labels, values: values }
+	}
+
+	async commentsPerGender(filters: FilterDashboardDto): Promise<any> {
+		const filter = this.dashboardFiltersQuery(filters)
+
+		const agg = [
+			{ $match: filter },
+			{
+				$group: {
+					_id: "$reviewer_gender",
+					total: {
+						$sum: 1,
+					},
+				},
+			},
+			{
+				$sort: {
+					_id: -1,
+				},
+			},
+			{
+				$replaceWith: {
+					gender: '$_id',
+					total: '$total'
+				},
+			},
+		];
+
+		const aggregations = await this.commentCollection
+			.aggregate<{ gender: string; total: number; }>(agg)
+			.toArray();
+
+		const labels = aggregations.map(aggregation => {
+			if (aggregation.gender === "M") return "Masculino"
+			if (aggregation.gender === "F") return "Feminino"
+			return "Não informado"
+		})
+		const values = aggregations.map(aggregation => aggregation.total)
+
+		return { labels: labels, values: values }
 	}
 
 	async create(createCommentDto: CreateCommentDto): Promise<void> {

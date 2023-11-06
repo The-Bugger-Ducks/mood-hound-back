@@ -48,8 +48,6 @@ export class UsersController {
 		@Query('email') email?: string,
 		@Query('role', new OptionalParseEnumPipe(UserRoleEnum)) role?: UserRoleEnum,
 	) {
-		console.log('\n\n\n\n\n\n', userId, '\n\n\n\n\n',);
-
 		return this.usersService.search(userId, {
 			name,
 			email,

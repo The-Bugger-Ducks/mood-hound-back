@@ -112,12 +112,20 @@ export class UserRepositoryImpl implements UserRepository {
 
 	async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
 		try {
-			const { name, password } = updateUserDto;
+			const userUpdate = {}
+
+			if (updateUserDto.name) {
+				userUpdate["name"] = updateUserDto.name
+			}
+
+			if (updateUserDto.password) {
+				userUpdate["password"] = updateUserDto.password
+			}
 
 			await this.userCollection.updateOne(
 				{ _id: MongoUtils.stringToObjectID(id) },
 				{
-					$set: { name: name, password: password },
+					$set: userUpdate,
 				},
 			);
 			return;
