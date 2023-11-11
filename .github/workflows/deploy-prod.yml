@@ -42,7 +42,13 @@ jobs:
 
      - name: Copy files
        run: sudo cp -R dist /home/ubuntu/mood-hound-back
+     
+     - name: Copy app.json
        run: sudo cp app.json /home/ubuntu/mood-hound-back
+     
+     - name: Copy package.json
        run: sudo cp package.json /home/ubuntu/mood-hound-back
+
+     - name: copy yarn.lock
        run: sudo cp yarn.lock /home/ubuntu/mood-hound-back
 
