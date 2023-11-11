@@ -1,0 +1,48 @@
+name: Deploy-PROD
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+      - name: Upload build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: buildfolder
+          path: ./build/*
+
+  download_build_folder:
+     runs-on: self-hosted
+     needs: build
+
+     steps:
+     - name: Start download build
+       uses: actions/download-artifact@v3
+       with:
+        name: buildfolder
+
+     - name: List files build
+       run: ls
+
+     - name: Copy files
+       run: sudo cp -R dist /home/ubuntu/mood-hound-back
+       run: sudo cp app.json /home/ubuntu/mood-hound-back
+       run: sudo cp package.json /home/ubuntu/mood-hound-back
+       run: sudo cp yarn.lock /home/ubuntu/mood-hound-back
+
