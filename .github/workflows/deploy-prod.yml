@@ -47,3 +47,13 @@ jobs:
      - name: Copy files
        run: sudo cp -R . /home/ubuntu/mood-hound-back
 
+     - name: Create ENV production file
+       run: |
+          touch .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          cat .env
+
+     - name: Copy env to self-hosted
+       run: sudo cp .env /home/ubuntu/mood-hound-back
