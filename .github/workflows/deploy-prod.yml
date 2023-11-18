@@ -33,6 +33,7 @@ jobs:
 
   download_build_folder:
      runs-on: self-hosted
+     environment: production
      needs: build
 
      steps:
