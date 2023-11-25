@@ -13,9 +13,9 @@ import { DATABASE_PROVIDER_NAME } from '../database.module';
 import { env } from '../../../shared/config/env';
 
 import { IDataServices } from '../../../domain/abstractions';
-import { CommentRepository, UserRepository } from '../../../domain/repositories';
+import { CommentRepository, NlpStatsRepository, UserRepository } from '../../../domain/repositories';
 
-import { UserRepositoryImpl, CommentRepositoryImpl } from '../implementations';
+import { UserRepositoryImpl, CommentRepositoryImpl, NlpStatsRepositoryImpl } from '../implementations';
 
 @Global()
 @Injectable()
@@ -23,6 +23,7 @@ export class DatabaseService
 	implements IDataServices, OnApplicationBootstrap, OnModuleDestroy {
 	public users: UserRepository;
 	public comments: CommentRepository;
+	public nlpStats: NlpStatsRepository;
 
 	constructor(@Inject(DATABASE_PROVIDER_NAME) private client: MongoClient) { }
 
@@ -40,5 +41,6 @@ export class DatabaseService
 
 		this.users = new UserRepositoryImpl(database);
 		this.comments = new CommentRepositoryImpl(database);
+		this.nlpStats = new NlpStatsRepositoryImpl(database);
 	}
 }
