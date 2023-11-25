@@ -3,4 +3,6 @@ import { NlpStatsEntity } from '../entities';
 
 
 export interface NlpStatsRepository extends IGenericRepository<NlpStatsEntity> {
+	processingTime(
+	): Promise<any>;
 }
