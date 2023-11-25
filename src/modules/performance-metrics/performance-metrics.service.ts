@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../shared/database/services/database.service';
+import { FilterNlpStatsDto } from '../../domain/dtos/nlp-stats/filter.nlp-stats.dto';
 
 @Injectable()
 export class PerformanceMetricsService {
 	constructor(private readonly databaseService: DatabaseService) { }
 
-	async findAll() {
+	async findAll(filters: FilterNlpStatsDto) {
 		const totalDocumentsProcessed = 1
 		const errorRate = {
 			total: 1000,
 			errors: 300,
 		};
-		const { dailyTotalProcessingTime, timeByPipelineStage } = await this.databaseService.nlpStats.processingTime()
+		const { dailyTotalProcessingTime, timeByPipelineStage } = await this.databaseService.nlpStats.processingTime(filters)
 		const dailyTotalErrors = [
 			{ day: new Date().toString(), errors: 45 },
 			{ day: new Date(8.64e15).toString(), errors: 80 },

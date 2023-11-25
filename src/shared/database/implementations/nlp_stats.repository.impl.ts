@@ -2,11 +2,13 @@ import {
 	Db,
 	Collection,
 	OptionalId,
+	Filter,
 } from 'mongodb';
 
 import { NlpStatsEntity, NlpStatsMongoEntity } from '../../../domain/entities';
 import { NlpStatsRepository } from '../../../domain/repositories';
 import { TimeUtils } from '../../utils/Time.utils';
+import { FilterNlpStatsDto } from '../../../domain/dtos';
 
 export class NlpStatsRepositoryImpl implements NlpStatsRepository {
 	readonly nlpStatsCollection: Collection<OptionalId<NlpStatsMongoEntity>>;
@@ -28,8 +30,10 @@ export class NlpStatsRepositoryImpl implements NlpStatsRepository {
 		return;
 	}
 
-	async processingTime() {
-		const metrics = await this.nlpStatsCollection.find({}).toArray()
+	async processingTime(filters: FilterNlpStatsDto) {
+		const filter = this.filtersQuery(filters);
+
+		const metrics = await this.nlpStatsCollection.find(filter).toArray()
 
 		const dailyTotalProcessingTime = this.dailyTotalProcessingTime(metrics)
 		const timeByPipelineStage = this.timeByPipelineStage(metrics)
@@ -72,5 +76,19 @@ export class NlpStatsRepositoryImpl implements NlpStatsRepository {
 				},
 			]
 		})
+	}
+
+	private filtersQuery(filters: FilterNlpStatsDto): Filter<NlpStatsMongoEntity> {
+		const filter: Filter<NlpStatsMongoEntity> = {};
+
+		if (filters.dateStart && filters.dateEnd) {
+			filter.created_at = { $gte: new Date(filters.dateStart), $lte: new Date(filters.dateEnd) };
+		} else if (filters.dateStart) {
+			filter.created_at = { $gte: new Date(filters.dateStart) };
+		} else if (filters.dateEnd) {
+			filter.created_at = { $lte: new Date(filters.dateEnd) };
+		}
+
+		return filter
 	}
 }
