@@ -1,0 +1,60 @@
+name: Deploy-PROD
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+      - name: Upload build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: buildfolder
+          path: |
+            ./dist
+            ./app.json
+            ./package.json
+            ./yarn.lock
+
+  download_build_folder:
+     runs-on: self-hosted
+     environment: production
+     needs: build
+
+     steps:
+     - name: Start download build
+       uses: actions/download-artifact@v3
+       with:
+        name: buildfolder
+
+     - name: List files build
+       run: ls
+
+     - name: Copy files
+       run: sudo cp -R . /home/ubuntu/mood-hound-back
+
+     - name: Create ENV production file
+       run: |
+          touch .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          cat .env
+
+     - name: Copy env to self-hosted
+       run: sudo cp .env /home/ubuntu/mood-hound-back
