@@ -1,103 +1,106 @@
 import { ObjectId } from 'mongodb';
 
-interface IExecutionTimes {
-	acessExecTime: string,
-	clearExecTime: string,
-	trainingModelExecTime: string
+interface IPipelineStageMetric {
+	stage: string;
+	time: string;
+	day: Date;
 }
 
-interface IAdaptation {
-	priorAdaptation: number[],
-	afterAdaptation: number[],
+interface ITotalOfDataMetric {
+	total_of_data: number;
 }
 
-interface IClearDataStatistics {
-	formatOfTheDataset: IAdaptation,
-	nullEvaluations: IAdaptation,
-	duplicateRecords: IAdaptation,
+interface IModelMetric {
+	model_accuracy: number;
+	model_precision: number;
 }
 
-interface IConfusionMatrix {
-	truePositive: number
-	falsePositive: number
-	falseNegative: number
-	trueNegative: number
-	neutralNeutral: number
-	neutralNegative: number
-	neutralPositive: number
+type MetricEntry = IPipelineStageMetric | ITotalOfDataMetric | IModelMetric;
+
+interface IError {
+	type: string;
+	value: number;
+	day?: Date;
 }
 
 export class NlpStatsMongoEntity {
 	_id?: ObjectId;
-	created_at: Date;
-	model_accuracy: number;
-	model_precision: number;
+	createdAt: Date;
+	modelAccuracy?: number;
+	modelPrecision?: number;
+	totalOfData?: number;
 
-	execution_times: {
-		acess_exec_time: string,
-		clear_exec_time: string,
-		training_model_exec_time: string
-	};
-	clear_data_statistics: {
-		format_of_the_dataset: {
-			prior_adaptation: number[],
-			after_adaptation: number[],
-		},
-		null_evaluations: {
-			prior_adaptation: number[],
-			after_adaptation: number[],
-		},
-		duplicate_records: {
-			prior_adaptation: number[],
-			after_adaptation: number[],
+	metrics: MetricEntry[] = [];
+	erros: IError[] = [];
+	errors: IError[] = [];
+
+	stages: IPipelineStageMetric[] = []
+
+	constructor(
+		_id?: ObjectId,
+		metrics: MetricEntry[] = [],
+		erros: IError[] = []
+	) {
+		this._id = _id as unknown as ObjectId;
+		this.metrics = metrics;
+		this.errors = erros.flatMap((error) => error);
+
+		this.parseMetrics();
+		this.handleCreatedAt();
+	}
+
+	private parseMetrics() {
+		for (const metric of this.metrics) {
+			if ('stage' in metric) {
+				const stageMetric = metric as IPipelineStageMetric;
+				this.stages.push(stageMetric)
+
+				if (!this.createdAt || Boolean(stageMetric.day) && this.createdAt > stageMetric.day) {
+					this.createdAt = stageMetric.day
+				}
+
+			} else if ('total_of_data' in metric) {
+				const totalOfDataMetric = metric as ITotalOfDataMetric;
+				this.totalOfData = totalOfDataMetric.total_of_data
+			} else if ('model_accuracy' in metric) {
+				const modelMetric = metric as IModelMetric;
+				this.modelAccuracy = modelMetric.model_accuracy
+				this.modelPrecision = modelMetric.model_precision
+			}
 		}
-	};
-	confusion_matrix: {
-		true_positive: number
-		false_positive: number
-		false_negative: number
-		true_negative: number
-		neutral_neutral: number
-		neutral_negative: number
-		neutral_positive: number
+	}
+
+	private handleCreatedAt() {
+		this.errors.forEach(error => {
+
+			if (!this.createdAt || Boolean(error.day) && this.createdAt > error.day) {
+				this.createdAt = error.day
+			}
+		})
 	}
 }
+
 
 export class NlpStatsEntity {
 	id: string;
 	createdAt: Date
 	modelAccuracy: number
 	modelPrecision: number
-	executionTimes: IExecutionTimes
-	clearDataStatistics: IClearDataStatistics
-	confusionMatrix: IConfusionMatrix
+	totalOfData: number
+
+	stages: IPipelineStageMetric[]
+	errors: IError[]
+
 
 	constructor(data: Partial<NlpStatsMongoEntity>) {
 		this.id = data._id.toString();
-		this.createdAt = data.created_at;
-		this.modelAccuracy = data.model_accuracy;
-		this.modelPrecision = data.model_precision;
+		this.createdAt = data.createdAt;
+		this.modelAccuracy = data.modelAccuracy;
+		this.modelPrecision = data.modelPrecision;
+		this.totalOfData = data.totalOfData;
 
-		this.executionTimes.acessExecTime = data.execution_times.acess_exec_time;
-		this.executionTimes.clearExecTime = data.execution_times.clear_exec_time;
-		this.executionTimes.trainingModelExecTime = data.execution_times.training_model_exec_time;
-
-		this.clearDataStatistics.duplicateRecords.afterAdaptation = data.clear_data_statistics.duplicate_records.after_adaptation
-		this.clearDataStatistics.duplicateRecords.priorAdaptation = data.clear_data_statistics.duplicate_records.prior_adaptation
-
-		this.clearDataStatistics.formatOfTheDataset.afterAdaptation = data.clear_data_statistics.format_of_the_dataset.after_adaptation
-		this.clearDataStatistics.formatOfTheDataset.priorAdaptation = data.clear_data_statistics.format_of_the_dataset.prior_adaptation
-
-		this.clearDataStatistics.nullEvaluations.afterAdaptation = data.clear_data_statistics.null_evaluations.after_adaptation
-		this.clearDataStatistics.nullEvaluations.priorAdaptation = data.clear_data_statistics.null_evaluations.prior_adaptation
-
-		this.confusionMatrix.falseNegative = data.confusion_matrix.false_negative
-		this.confusionMatrix.falsePositive = data.confusion_matrix.false_positive
-		this.confusionMatrix.neutralNegative = data.confusion_matrix.neutral_negative
-		this.confusionMatrix.neutralNeutral = data.confusion_matrix.neutral_neutral
-		this.confusionMatrix.neutralPositive = data.confusion_matrix.neutral_positive
-		this.confusionMatrix.trueNegative = data.confusion_matrix.true_negative
-		this.confusionMatrix.truePositive = data.confusion_matrix.true_positive
+		this.errors = data.errors;
+		this.stages = data.stages;
 	}
 }
 

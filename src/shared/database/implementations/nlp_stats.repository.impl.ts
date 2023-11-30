@@ -33,48 +33,99 @@ export class NlpStatsRepositoryImpl implements NlpStatsRepository {
 	async processingTime(filters: FilterNlpStatsDto) {
 		const filter = this.filtersQuery(filters);
 
-		const metrics = await this.nlpStatsCollection.find(filter).toArray()
+		const documents = await this.nlpStatsCollection.find(filter).toArray()
+
+		const metricDocuments = documents.map(metric => new NlpStatsMongoEntity(metric._id, metric.metrics, metric.erros))
+		const metrics = metricDocuments.map(metric => new NlpStatsEntity(metric))
 
 		const dailyTotalProcessingTime = this.dailyTotalProcessingTime(metrics)
 		const timeByPipelineStage = this.timeByPipelineStage(metrics)
+		const totalDocumentsProcessed = this.getTotalDocumentsProcessed(metrics)
+		const errorRate = this.getErrorRate(metrics)
+		const dailyTotalErrors = this.getDailyTotalErrors(metrics)
+		const errorsByType = this.getErrorsByType(metrics)
 
 		return {
 			dailyTotalProcessingTime,
-			timeByPipelineStage
+			timeByPipelineStage,
+			totalDocumentsProcessed,
+			errorRate,
+			dailyTotalErrors,
+			errorsByType
 		}
 	}
 
-	private dailyTotalProcessingTime(metrics: NlpStatsMongoEntity[]) {
-		return metrics.map(metric => {
-			const acessExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.acess_exec_time)
-			const clearExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.clear_exec_time)
-			const trainingModelExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.training_model_exec_time)
 
-			const totalProcessingTimeInSecods = acessExecTimeInSecods + clearExecTimeInSecods + trainingModelExecTimeInSecods
+	private getErrorsByType(metrics: NlpStatsEntity[]) {
+		const errors = metrics.flatMap(metric => metric.errors)
+
+		const errorsByType: Array<{ type: string, errors: number }> = []
+		errors.forEach(error => {
+			const findError = errorsByType.find(errorType => errorType.type === error.type)
+
+			if (!findError) {
+				errorsByType.push({ type: error.type, errors: error.value })
+				return
+			}
+			findError.errors += error.value
+		})
+
+		return errorsByType
+	}
+
+	private getErrorRate(metrics: NlpStatsEntity[]) {
+		const totalErrors = metrics.reduce((acc, metric) => {
+			const numberOfErrors = metric.errors.reduce((accError, error) => error.value + accError, 0)
+			return numberOfErrors + acc
+		}, 0)
+
+		return {
+			total: this.getTotalDocumentsProcessed(metrics),
+			errors: totalErrors,
+		}
+	}
+
+	private getDailyTotalErrors(metrics: NlpStatsEntity[]) {
+		return metrics.map(metric => {
+			const numberOfErrors = metric.errors.reduce((accError, error) => error.value + accError, 0)
 
 			return {
-				time: totalProcessingTimeInSecods, day: metric.created_at
+				day: new Date().toString(), errors: numberOfErrors
 			}
 		})
 	}
 
-	private timeByPipelineStage(metrics: NlpStatsMongoEntity[]) {
-		return metrics.flatMap(metric => {
-			const acessExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.acess_exec_time)
-			const clearExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.clear_exec_time)
-			const trainingModelExecTimeInSecods = TimeUtils.timeToSecods(metric.execution_times.training_model_exec_time)
+	private getTotalDocumentsProcessed(metrics: NlpStatsEntity[]) {
+		return metrics.reduce((acc, metric) => metric.totalOfData + acc, 0)
+	}
 
-			return [
-				{
-					stage: "Acesso ao dados", day: metric.created_at, time: acessExecTimeInSecods
-				},
-				{
-					stage: "Limpeza dos dados", day: metric.created_at, time: clearExecTimeInSecods
-				},
-				{
-					stage: "Treinamento do Modelo", day: metric.created_at, time: trainingModelExecTimeInSecods
-				},
-			]
+	private dailyTotalProcessingTime(metrics: NlpStatsEntity[]) {
+		return metrics.map(metric => {
+
+			const totalProcessingTimeInSecods = metric.stages.reduce((totalSeconds, stage) => {
+				if (stage.stage == "Pipeline completa") {
+					return totalSeconds
+				}
+				const seconds = TimeUtils.timeToSecods(stage.time)
+
+				return totalSeconds + seconds
+			}, 0)
+
+			return {
+				time: totalProcessingTimeInSecods, day: metric.createdAt
+			}
+		})
+	}
+
+	private timeByPipelineStage(metrics: NlpStatsEntity[]) {
+		return metrics.flatMap(metric => {
+			return metric.stages.map(stage => {
+				return {
+					stage: stage.stage,
+					day: stage.day,
+					time: TimeUtils.timeToSecods(stage.time)
+				}
+			}).filter(stage => stage.stage != "Pipeline completa")
 		})
 	}
 
