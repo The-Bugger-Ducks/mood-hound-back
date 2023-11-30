@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { CommentsModule } from './modules/comments/comments.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { PerformanceMetricsModule } from './modules/performance-metrics/performance-metrics.module';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 		AuthModule,
 		CommentsModule,
 		DashboardModule,
+		PerformanceMetricsModule,
 	],
 	providers: [
 		{
@@ -23,4 +25,4 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 		},
 	],
 })
-export class AppModule {}
+export class AppModule { }
