@@ -6,6 +6,7 @@ import { CreateCommentDto } from './comment/create.comment.dto';
 import { FilterCommentDto } from './comment/filter.comment.dto';
 
 import { FilterDashboardDto } from './dashboard/filter.dashboard.dto';
+import { FilterNlpStatsDto } from './nlp-stats/filter.nlp-stats.dto';
 
 export {
 	CreateUserDto,
@@ -13,5 +14,6 @@ export {
 	UpdateUserRoleDto,
 	CreateCommentDto,
 	FilterCommentDto,
-	FilterDashboardDto
+	FilterDashboardDto,
+	FilterNlpStatsDto
 };

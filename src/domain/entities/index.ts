@@ -7,6 +7,8 @@ import {
 	CommentMongoEntity,
 } from './comment.entity';
 
+import { NlpStatsEntity, NlpStatsMongoEntity } from './nlp_stats.entity';
+
 export {
 	UserEntity,
 	UserMongoEntity,
@@ -15,4 +17,6 @@ export {
 	CommentSentimentEnum,
 	CommentTopicEnum,
 	CommentMongoEntity,
+	NlpStatsEntity,
+	NlpStatsMongoEntity,
 };
